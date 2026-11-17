@@ -1,7 +1,7 @@
 import React from 'react';
 import { TerminalCLI } from './TerminalCLI';
 import { SITE_CONFIG } from '../../config/siteConfig';
-import { FileText, Github, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
+import { Github, Linkedin, Mail, ArrowDown } from 'lucide-react';
 
 export const Hero: React.FC = () => {
   return (
@@ -18,31 +18,22 @@ export const Hero: React.FC = () => {
           </h1>
           
           <p className="hero-subtitle">
-            I’m <strong>Mostafa Abduljaleel</strong>, a Computer Science student at Cairo University specializing in <strong>.NET 8 / C# REST APIs</strong>, high-performance relational databases, and autonomous AI automation workflows.
+            I’m <strong>Mostafa Abduljaleel</strong>, an Information Technology student at Cairo
+            University, specializing in <strong>networking</strong>. I build backends in
+            <strong> .NET</strong>, automate the boring parts with Python and AI, and spend my
+            lab time on routing, switching and infrastructure.
           </p>
 
           <div className="hero-cta-group">
-            <a
-              href={SITE_CONFIG.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hero-btn primary"
-            >
-              <FileText size={18} /> View Resume <ArrowUpRight size={16} />
-            </a>
-
-            <a
-              href="#work"
-              className="hero-btn secondary"
-            >
-              Explore Case Studies ↓
+            <a href="#work" className="hero-btn primary">
+              See my work <ArrowDown size={16} />
             </a>
 
             <a
               href={`mailto:${SITE_CONFIG.email}`}
-              className="hero-btn ghost"
+              className="hero-btn secondary"
             >
-              <Mail size={16} /> Direct Email
+              <Mail size={16} /> Email me
             </a>
           </div>
 

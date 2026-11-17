@@ -1,8 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
+/**
+ * The intro runs ~4.5s. That is fine once, but it was replaying on every
+ * navigation: the "seen" flag was written and never read. It is now checked up
+ * front, and skipped entirely for reduced-motion visitors.
+ */
+function shouldSkipIntro(): boolean {
+  if (typeof window === 'undefined') return true;
+  try {
+    if (sessionStorage.getItem('jaleelo_loader_seen') === 'true') return true;
+  } catch {
+    // storage unavailable — fall through and play it
+  }
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export const Loader: React.FC = () => {
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isVisible, setIsVisible] = useState<boolean>(() => !shouldSkipIntro());
   const containerRef = useRef<HTMLDivElement>(null);
   const singularityRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -12,6 +27,8 @@ export const Loader: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (!isVisible) return;
+
     // -------------------------------------------------------------
     // CANVAS DEEP SPACE STAR-DUST PARTICLE ENGINE
     // -------------------------------------------------------------
@@ -169,7 +186,7 @@ export const Loader: React.FC = () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [isVisible]);
 
   if (!isVisible) return null;
 

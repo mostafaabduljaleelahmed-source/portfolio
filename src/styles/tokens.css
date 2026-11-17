@@ -12,6 +12,22 @@
   --void: #080b12;
   --theme-color: #88d9ff;
 
+  /* Semantic aliases.
+     Components reference these names; they used to be undefined, which silently
+     dropped ~34 colour declarations back to inherited values. */
+  --accent: var(--blue);
+  --purple: var(--violet);
+  --text-main: var(--ink);
+  --text-secondary: #c2cedb;
+  --text-muted: var(--quiet);
+  --text-dim: #6d7d8e;
+
+  /* Elevation surfaces, opaque so content stays readable over the 3D scene */
+  --surface-0: #080b12;
+  --surface-1: #0c111a;
+  --surface-2: #111823;
+  --surface-raised: rgba(255, 255, 255, 0.025);
+
   /* Glassmorphism System */
   --glass-bg: rgba(12, 18, 28, 0.65);
   --glass-border: rgba(136, 217, 255, 0.18);

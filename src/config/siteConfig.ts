@@ -25,16 +25,14 @@ export const SITE_CONFIG = {
   name: 'Mostafa Abduljaleel Ahmed',
   handle: 'Jaleelo',
   version: 'v2.6 OS',
-  title: 'Mostafa Abduljaleel — Software & Systems Engineer',
-  description: 'Full-stack .NET Backend Developer, AI Automation Engineer, and Computer Science Student at Cairo University.',
+  title: 'Mostafa Abduljaleel — IT, Networking & Backend',
+  description: 'Information Technology student at Cairo University specializing in networking, building .NET backends and AI automation.',
   location: 'CAIRO / EGYPT',
   email: 'mostafaabduljaleelahmed@gmail.com',
   whatsapp: 'https://wa.me/201011319867',
   github: 'https://github.com/mostafaabduljaleelahmed-source',
   linkedin: 'https://www.linkedin.com/in/mostafa-abduljaleel-7980893a3/',
-  resumeUrl: '#resume-download',
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  
+
   stack: [
     { name: '.NET 8 / C#', category: 'Backend Architecture', tag: 'ASP.NET Core' },
     { name: 'Flutter', category: 'Mobile Apps', tag: 'Cross-Platform' },

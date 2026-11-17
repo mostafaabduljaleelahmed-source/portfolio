@@ -1,7 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useUI } from '../../context/UIContext';
 import { useAudio } from '../../context/AudioContext';
 import { easterEggService } from '../../services/easterEggService';
+
+interface Command {
+  id: string;
+  label: string;
+  tag: string;
+  keywords: string;
+}
+
+const COMMANDS: Command[] = [
+  { id: 'projects', label: 'Jump to projects', tag: 'Navigate', keywords: 'projects work case studies' },
+  { id: 'contact', label: 'Jump to contact', tag: 'Navigate', keywords: 'contact email hire reach' },
+  { id: 'ai', label: 'Ask the site assistant', tag: 'Assistant', keywords: 'ai chat ask assistant question' },
+  { id: 'achievements', label: 'View unlocked achievements', tag: 'Easter egg', keywords: 'achievements trophy secret' },
+  { id: 'night-mode', label: 'Toggle midnight stealth mode', tag: 'Theme', keywords: 'night dark stealth theme' },
+  { id: 'hero-lighting', label: 'Cycle the 3D lighting theme', tag: 'Scene', keywords: 'lighting 3d scene hero volumetric' },
+  { id: 'matrix', label: 'Toggle matrix digital rain', tag: 'Easter egg', keywords: 'matrix rain green' }
+];
 
 export const CommandPalette: React.FC = () => {
   const {
@@ -10,8 +27,6 @@ export const CommandPalette: React.FC = () => {
     toggleCommandPalette,
     showToast,
     toggleAIChat,
-    openGuestbookForm,
-    openAdminPanel,
     openAchievements,
     setMatrixMode
   } = useUI();
@@ -20,18 +35,14 @@ export const CommandPalette: React.FC = () => {
 
   useEffect(() => {
     if (isCommandPaletteOpen) {
+      setSearch('');
       easterEggService.unlockAchievement('cmd_k');
     }
   }, [isCommandPaletteOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Cmd/Ctrl + Shift + A -> Open Hidden Admin Control Center
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
-        e.preventDefault();
-        openAdminPanel();
-        showToast('HIDDEN CONTROL CENTER', 'Admin Panel Initialized.');
-      } else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         toggleCommandPalette();
       } else if (e.key === 'Escape' && isCommandPaletteOpen) {
@@ -40,12 +51,27 @@ export const CommandPalette: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCommandPaletteOpen, closeCommandPalette, toggleCommandPalette, openAdminPanel, showToast]);
+  }, [isCommandPaletteOpen, closeCommandPalette, toggleCommandPalette]);
+
+  const results = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return COMMANDS;
+    return COMMANDS.filter(c => `${c.label} ${c.keywords}`.toLowerCase().includes(q));
+  }, [search]);
 
   const handleCommandSelect = (cmd: string) => {
     closeCommandPalette();
     playClick();
     switch (cmd) {
+      case 'projects':
+        window.location.hash = '#work';
+        break;
+      case 'contact':
+        window.location.hash = '#contact';
+        break;
+      case 'ai':
+        toggleAIChat();
+        break;
       case 'achievements':
         openAchievements();
         break;
@@ -55,29 +81,13 @@ export const CommandPalette: React.FC = () => {
       case 'hero-lighting':
         playTheme();
         window.dispatchEvent(new CustomEvent('discover-architect'));
-        showToast('LIGHTING CYCLED', '3D Scene Volumetric Lighting Theme Updated.');
-        break;
-      case 'admin-panel':
-        openAdminPanel();
-        break;
-      case 'guestbook':
-        openGuestbookForm();
+        showToast('LIGHTING CYCLED', 'Scene lighting theme updated.');
         break;
       case 'matrix':
         setMatrixMode(prev => !prev);
         easterEggService.unlockAchievement('matrix');
-        showToast('COMMAND EXECUTED', 'Matrix Rain Toggled!');
-        break;
-      case 'quote':
         playCrystal();
-        showToast('ENGINEERING WISDOM', '"First, solve the problem. Then, write the code." — John Johnson');
-        break;
-      case 'ai':
-        toggleAIChat();
-        showToast('AI ASSISTANT', 'Interactive AI Interface Activated.');
-        break;
-      case 'contact':
-        window.location.hash = '#contact';
+        showToast('MATRIX MODE', 'Digital rain toggled.');
         break;
       default:
         break;
@@ -101,39 +111,22 @@ export const CommandPalette: React.FC = () => {
           className="cmdk-input"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Type a command (e.g. achievements, night-mode, hero-lighting, admin, matrix)..."
+          placeholder="Search commands…"
           autoFocus
           aria-label="Command search input"
         />
         <div className="cmdk-list">
-          <div className="cmdk-item" onClick={() => handleCommandSelect('achievements')}>
-            <span>&gt; View Secret System Achievements</span>
-            <code>Trophy</code>
-          </div>
-          <div className="cmdk-item" onClick={() => handleCommandSelect('night-mode')}>
-            <span>&gt; Toggle Midnight Stealth Night Mode</span>
-            <code>Stealth</code>
-          </div>
-          <div className="cmdk-item" onClick={() => handleCommandSelect('hero-lighting')}>
-            <span>&gt; Cycle 3D Volumetric Lighting Theme</span>
-            <code>3D Scene</code>
-          </div>
-          <div className="cmdk-item" onClick={() => handleCommandSelect('admin-panel')}>
-            <span>&gt; Open Hidden Admin Control Center (Ctrl+Shift+A)</span>
-            <code>Secret</code>
-          </div>
-          <div className="cmdk-item" onClick={() => handleCommandSelect('guestbook')}>
-            <span>&gt; Sign Operating Environment Guestbook</span>
-            <code>Community</code>
-          </div>
-          <div className="cmdk-item" onClick={() => handleCommandSelect('matrix')}>
-            <span>&gt; Toggle Matrix Digital Rain</span>
-            <code>Easter Egg</code>
-          </div>
-          <div className="cmdk-item" onClick={() => handleCommandSelect('ai')}>
-            <span>&gt; Ask Jaleelo AI Assistant</span>
-            <code>AI Agent</code>
-          </div>
+          {results.length === 0 && (
+            <div className="cmdk-item" aria-live="polite">
+              <span>No command matches “{search}”</span>
+            </div>
+          )}
+          {results.map(cmd => (
+            <div key={cmd.id} className="cmdk-item" onClick={() => handleCommandSelect(cmd.id)}>
+              <span>&gt; {cmd.label}</span>
+              <code>{cmd.tag}</code>
+            </div>
+          ))}
         </div>
       </div>
     </div>

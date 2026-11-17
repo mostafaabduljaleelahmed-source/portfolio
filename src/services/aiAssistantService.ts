@@ -3,7 +3,6 @@ import { ChatMessage } from '../types';
 const HISTORY_KEY = 'jaleelo_ai_history';
 
 class AIAssistantService {
-  private apiKey: string = import.meta.env.VITE_AI_API_KEY || '';
 
   public getHistory(): ChatMessage[] {
     try {
@@ -39,13 +38,17 @@ class AIAssistantService {
   public renderMarkdownWithCode(text: string): string {
     if (!text) return '';
 
+    // Escape everything first: user messages are rendered through this too
+    const safe = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
     // First handle code blocks ```lang code ```
-    let formatted = text.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+    let formatted = safe.replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
       const language = lang || 'code';
-      const cleanCode = code
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+      const cleanCode = code; // already escaped above
 
       return `<div style="margin: 10px 0; background: #05070c; border: 1px solid rgba(136, 217, 255, 0.2); border-radius: 8px; overflow: hidden;">
         <div style="background: rgba(255,255,255,0.04); padding: 4px 10px; font-size: 0.7rem; font-family: DM Mono, monospace; color: var(--accent); display: flex; justify: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06);">

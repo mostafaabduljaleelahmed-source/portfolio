@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useUI } from '../../context/UIContext';
 import { useAudio } from '../../context/AudioContext';
 import { aiAssistantService } from '../../services/aiAssistantService';
-import { analyticsService } from '../../services/analyticsService';
 import { ChatMessage } from '../../types';
 import { Bot, Send, Trash2, X, Sparkles, Code2, Briefcase, GraduationCap } from 'lucide-react';
 
@@ -27,7 +26,6 @@ export const AIChat: React.FC = () => {
     const userText = (customQuery || queryKey).trim();
     if (!userText) return;
 
-    analyticsService.trackAIQuery(userText);
 
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}-user`,

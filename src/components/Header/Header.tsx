@@ -3,10 +3,10 @@ import { SITE_CONFIG } from '../../config/siteConfig';
 import { useUI } from '../../context/UIContext';
 import { useAudio } from '../../context/AudioContext';
 import { easterEggService } from '../../services/easterEggService';
-import { PenTool, FileText, Terminal, Menu, X } from 'lucide-react';
+import { Github, Linkedin, Terminal, Menu, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
-  const { showToast, openCommandPalette, openGuestbookForm, openPinModal } = useUI();
+  const { showToast, openCommandPalette } = useUI();
   const { playClick } = useAudio();
   const [clickTimestamps, setClickTimestamps] = useState<number[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -70,10 +70,9 @@ export const Header: React.FC = () => {
     if (recent.length >= 5) {
       setClickTimestamps([]);
       easterEggService.unlockAchievement('dev_mode');
-      showToast('ADMIN AUTHENTICATION', 'Prompting Pin Verification...');
-      openPinModal();
+      showToast('DEV MODE', 'You found the logo easter egg.');
     }
-    
+
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -123,23 +122,22 @@ export const Header: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="header-btn"
-            title="View Resume Document"
-            aria-label="Download Resume"
+            title="GitHub profile"
+            aria-label="GitHub profile"
           >
-            <FileText size={14} color="var(--accent)" /> Resume
+            <Github size={14} color="var(--accent)" /> GitHub
           </a>
 
-          <button
+          <a
+            href={SITE_CONFIG.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
             className="header-btn"
-            onClick={() => {
-              playClick();
-              openGuestbookForm();
-            }}
-            title="Sign Environment Guestbook"
-            aria-label="Sign Guestbook"
+            title="LinkedIn profile"
+            aria-label="LinkedIn profile"
           >
-            <PenTool size={14} /> Guestbook
-          </button>
+            <Linkedin size={14} /> LinkedIn
+          </a>
 
           <button
             className="header-btn"
@@ -226,19 +224,18 @@ export const Header: React.FC = () => {
               className="drawer-action-btn primary"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <FileText size={18} /> View Resume
+              <Github size={18} /> GitHub
             </a>
 
-            <button
+            <a
+              href={SITE_CONFIG.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
               className="drawer-action-btn"
-              onClick={() => {
-                playClick();
-                setIsMobileMenuOpen(false);
-                openGuestbookForm();
-              }}
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              <PenTool size={18} /> Sign Guestbook
-            </button>
+              <Linkedin size={18} /> LinkedIn
+            </a>
 
             <button
               className="drawer-action-btn"

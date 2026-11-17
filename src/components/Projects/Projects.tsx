@@ -1,320 +1,175 @@
 import React, { useState } from 'react';
 import { SITE_CONFIG, ProjectCase } from '../../config/siteConfig';
-import { analyticsService } from '../../services/analyticsService';
 import { useAudio } from '../../context/AudioContext';
-import { Github, ExternalLink, ChevronDown, ChevronUp, Cpu, CheckCircle, ShieldCheck, Layers, Workflow } from 'lucide-react';
+import { Github, ExternalLink, ChevronDown, Cpu, Target, Layers, Workflow, ShieldCheck, Check } from 'lucide-react';
+
+interface CaseStudyProps {
+  project: ProjectCase;
+  isOpen: boolean;
+  onToggle: () => void;
+}
+
+const CaseStudy: React.FC<CaseStudyProps> = ({ project, isOpen, onToggle }) => {
+  const panelId = `case-panel-${project.number}`;
+
+  return (
+    <article className={`case ${isOpen ? 'is-open' : ''}`}>
+      <button
+        type="button"
+        className="case-header"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+      >
+        <span className="case-index">{project.number}</span>
+
+        <span className="case-identity">
+          <h3>{project.title}</h3>
+          <span className="case-meta">{project.meta}</span>
+        </span>
+
+        <span className="case-tags" aria-hidden="true">
+          {project.technologies.slice(0, 3).map(tech => (
+            <span key={tech} className="tag">{tech}</span>
+          ))}
+        </span>
+
+        <ChevronDown
+          size={20}
+          color={isOpen ? 'var(--accent)' : 'var(--text-muted)'}
+          style={{
+            flexShrink: 0,
+            transform: isOpen ? 'rotate(180deg)' : 'none',
+            transition: 'transform .2s ease'
+          }}
+          aria-hidden="true"
+        />
+      </button>
+
+      {isOpen && (
+        <div className="case-body" id={panelId}>
+          <div className="case-block">
+            <h4>Overview</h4>
+            <p>{project.summary}</p>
+          </div>
+
+          <div className="case-grid case-block">
+            <div>
+              <h4><Cpu size={14} aria-hidden="true" /> The problem</h4>
+              <p>{project.problem}</p>
+            </div>
+            <div>
+              <h4><Target size={14} aria-hidden="true" /> The goal</h4>
+              <p>{project.goal}</p>
+            </div>
+          </div>
+
+          <div className="case-block">
+            <h4><Layers size={14} aria-hidden="true" /> Architecture</h4>
+            <p>{project.architecture}</p>
+            {project.architectureDiagram && (
+              <div className="case-diagram" role="img" aria-label={`${project.title} architecture diagram`}>
+                {project.architectureDiagram.join('\n')}
+              </div>
+            )}
+          </div>
+
+          {(project.challenges.length > 0 || project.decisions.length > 0) && (
+            <div className="case-grid case-block">
+              {project.challenges.length > 0 && (
+                <div>
+                  <h4><Workflow size={14} aria-hidden="true" /> Hard parts</h4>
+                  <ul>
+                    {project.challenges.map(c => <li key={c}>{c}</li>)}
+                  </ul>
+                </div>
+              )}
+              {project.decisions.length > 0 && (
+                <div>
+                  <h4><ShieldCheck size={14} aria-hidden="true" /> Decisions &amp; trade-offs</h4>
+                  <ul>
+                    {project.decisions.map(d => <li key={d}>{d}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="case-block">
+            <h4>Built with</h4>
+            <div className="case-tags" style={{ justifyContent: 'flex-start', marginLeft: 0, marginTop: 8 }}>
+              {project.technologies.map(tech => (
+                <span key={tech} className="tag solid">{tech}</span>
+              ))}
+            </div>
+          </div>
+
+          {project.results.length > 0 && (
+            <div className="case-block">
+              <h4>Outcome</h4>
+              <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                {project.results.map(res => (
+                  <li key={res} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                    <Check size={15} color="var(--emerald)" style={{ flexShrink: 0, marginTop: 4 }} aria-hidden="true" />
+                    <span>{res}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {(project.code || project.link) && (
+            <div className="case-actions">
+              {project.code && (
+                <a className="case-link" href={project.code} target="_blank" rel="noopener noreferrer">
+                  <Github size={16} aria-hidden="true" /> Source code
+                </a>
+              )}
+              {project.link && (
+                <a className="case-link primary" href={project.link} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={16} aria-hidden="true" /> View it live
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </article>
+  );
+};
 
 export const Projects: React.FC = () => {
   const { playClick } = useAudio();
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(0); // First project expanded by default for immediate recruiter value
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const handleToggle = (index: number, title: string) => {
+  const handleToggle = (index: number) => {
     playClick();
-    if (expandedIndex === index) {
-      setExpandedIndex(null);
-    } else {
-      setExpandedIndex(index);
-      analyticsService.trackProjectView(title);
-    }
+    setOpenIndex(prev => (prev === index ? null : index));
   };
 
   return (
-    <section className="scene work" id="work" aria-label="Engineering Case Studies">
+    <section className="scene work" id="work" aria-labelledby="work-heading">
       <div>
-        <div className="eyebrow" style={{ color: 'var(--accent)', fontWeight: 600 }}>
-          Featured Systems & Architecture / 01
-        </div>
-        <h2 style={{ fontSize: '2.2rem', margin: '0.5rem 0 1.5rem 0' }}>
-          Engineering Case Studies
-        </h2>
-        <p style={{ color: 'var(--text-muted)', maxWidth: '720px', marginBottom: '2.5rem', lineHeight: '1.6' }}>
-          Every project below is documented as an architectural case study detailing the technical problem, system architecture, engineering challenges, trade-off decisions, and empirical results.
-        </p>
+        <header className="section-head">
+          <div className="eyebrow">Selected work / 01</div>
+          <h2 id="work-heading">Things I&apos;ve built</h2>
+          <p>
+            Each one starts with the problem it solves, then how it is put together and what
+            I had to decide along the way.
+          </p>
+        </header>
 
-        <div className="case-studies-container" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          {SITE_CONFIG.projects.map((project: ProjectCase, idx: number) => {
-            const isExpanded = expandedIndex === idx;
-
-            return (
-              <article
-                key={idx}
-                className="engineering-case-study"
-                style={{
-                  borderRadius: '12px',
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: isExpanded ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255, 255, 255, 0.07)',
-                  boxShadow: isExpanded ? '0 12px 30px rgba(0,0,0,0.3)' : 'none',
-                  transition: 'all 0.25s ease',
-                  overflow: 'hidden'
-                }}
-              >
-                {/* CASE STUDY HEADER ROW */}
-                <div
-                  onClick={() => handleToggle(idx, project.title)}
-                  style={{
-                    padding: 'clamp(1rem, 2.5vw, 1.75rem)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '1rem',
-                    minHeight: 'var(--min-touch-target)',
-                    background: isExpanded ? 'rgba(255, 255, 255, 0.03)' : 'transparent',
-                    userSelect: 'none'
-                  }}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      handleToggle(idx, project.title);
-                    }
-                  }}
-                  aria-expanded={isExpanded}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 240px' }}>
-                    <span
-                      style={{
-                        fontFamily: 'DM Mono, monospace',
-                        fontSize: '0.9rem',
-                        color: 'var(--accent)',
-                        fontWeight: 700,
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        background: 'rgba(255,255,255,0.05)',
-                        flexShrink: 0
-                      }}
-                    >
-                      {project.number}
-                    </span>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: 'clamp(1.1rem, 2vw, 1.4rem)', color: '#ffffff' }}>{project.title}</h3>
-                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                        {project.meta}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
-                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                      {project.technologies.slice(0, 3).map((tech, tIdx) => (
-                        <span
-                          key={tIdx}
-                          style={{
-                            fontSize: '0.75rem',
-                            padding: '3px 8px',
-                            borderRadius: '4px',
-                            background: 'rgba(255,255,255,0.04)',
-                            color: 'var(--text-secondary)',
-                            fontFamily: 'DM Mono, monospace'
-                          }}
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    {isExpanded ? <ChevronUp size={20} color="var(--accent)" /> : <ChevronDown size={20} color="var(--text-muted)" />}
-                  </div>
-                </div>
-
-                {/* CASE STUDY EXPANDED BODY */}
-                {isExpanded && (
-                  <div style={{ padding: 'clamp(1rem, 2.5vw, 1.75rem)', borderTop: '1px solid rgba(255, 255, 255, 0.07)' }}>
-                    {/* SUMMARY & GOAL */}
-                    <div style={{ marginBottom: '1.75rem' }}>
-                      <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--accent)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        Executive Summary
-                      </h4>
-                      <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '1rem', lineHeight: '1.6' }}>
-                        {project.summary}
-                      </p>
-                    </div>
-
-                    {/* PROBLEM & GOAL GRID */}
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                        gap: '1.25rem',
-                        marginBottom: '1.75rem'
-                      }}
-                    >
-                      <div style={{ padding: '1.25rem', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                        <h5 style={{ margin: '0 0 0.5rem 0', color: '#ff6b6b', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <Cpu size={15} /> Problem Statement
-                        </h5>
-                        <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                          {project.problem}
-                        </p>
-                      </div>
-
-                      <div style={{ padding: '1.25rem', borderRadius: '8px', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                        <h5 style={{ margin: '0 0 0.5rem 0', color: 'var(--emerald)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <CheckCircle size={15} /> Engineering Goal
-                        </h5>
-                        <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
-                          {project.goal}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* SYSTEM ARCHITECTURE & DIAGRAM */}
-                    <div style={{ marginBottom: '1.75rem' }}>
-                      <h4 style={{ margin: '0 0 0.75rem 0', color: '#ffffff', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Layers size={16} color="var(--purple)" /> System Architecture
-                      </h4>
-                      <p style={{ margin: '0 0 1rem 0', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.5' }}>
-                        {project.architecture}
-                      </p>
-
-                      {project.architectureDiagram && (
-                        <div
-                          style={{
-                            background: '#090d16',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '8px',
-                            padding: '1rem',
-                            fontFamily: 'DM Mono, monospace',
-                            fontSize: '0.75rem',
-                            color: 'var(--accent)',
-                            overflowX: 'auto',
-                            whiteSpace: 'pre',
-                            lineHeight: '1.4',
-                            maxWidth: '100%'
-                          }}
-                        >
-                          {project.architectureDiagram.join('\n')}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* CHALLENGES & DECISIONS */}
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                        gap: '1.25rem',
-                        marginBottom: '1.75rem'
-                      }}
-                    >
-                      <div>
-                        <h5 style={{ margin: '0 0 0.75rem 0', color: '#ffffff', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <Workflow size={15} color="var(--orange)" /> Key Challenges
-                        </h5>
-                        <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.6' }}>
-                          {project.challenges.map((c, cIdx) => (
-                            <li key={cIdx}>{c}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div>
-                        <h5 style={{ margin: '0 0 0.75rem 0', color: '#ffffff', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <ShieldCheck size={15} color="var(--emerald)" /> Architectural Decisions & Trade-offs
-                        </h5>
-                        <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.6' }}>
-                          {project.decisions.map((d, dIdx) => (
-                            <li key={dIdx}>{d}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* TECHNOLOGIES & RESULTS */}
-                    <div style={{ padding: '1rem 1.25rem', background: 'rgba(255,255,255,0.015)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '1.5rem' }}>
-                      <div style={{ marginBottom: '0.75rem' }}>
-                        <strong style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>Technologies & Libraries:</strong>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                          {project.technologies.map((tech, tIdx) => (
-                            <span
-                              key={tIdx}
-                              style={{
-                                fontSize: '0.75rem',
-                                padding: '3px 8px',
-                                borderRadius: '4px',
-                                background: 'rgba(255,255,255,0.06)',
-                                border: '1px solid rgba(255,255,255,0.08)',
-                                color: '#ffffff',
-                                fontFamily: 'DM Mono, monospace'
-                              }}
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <strong style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>Quantifiable Outcomes:</strong>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.85rem', color: 'var(--emerald)' }}>
-                          {project.results.map((res, rIdx) => (
-                            <div key={rIdx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              <span>✓</span> <span>{res}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ACTION LINKS */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                      {project.code && (
-                        <a
-                          href={project.code}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            padding: '0.75rem 1.25rem',
-                            minHeight: 'var(--min-touch-target)',
-                            borderRadius: '8px',
-                            background: 'rgba(255,255,255,0.06)',
-                            border: '1px solid rgba(255,255,255,0.12)',
-                            color: '#ffffff',
-                            textDecoration: 'none',
-                            fontSize: '0.85rem',
-                            fontWeight: 500,
-                            flex: '1 1 180px'
-                          }}
-                        >
-                          <Github size={16} /> Repository Code
-                        </a>
-                      )}
-                      {project.link && (
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            padding: '0.75rem 1.25rem',
-                            minHeight: 'var(--min-touch-target)',
-                            borderRadius: '8px',
-                            background: 'var(--accent)',
-                            color: '#000000',
-                            textDecoration: 'none',
-                            fontSize: '0.85rem',
-                            fontWeight: 700,
-                            flex: '1 1 180px'
-                          }}
-                        >
-                          <ExternalLink size={16} /> Live Demonstration
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </article>
-            );
-          })}
+        <div className="case-list">
+          {SITE_CONFIG.projects.map((project: ProjectCase, idx: number) => (
+            <CaseStudy
+              key={project.title}
+              project={project}
+              isOpen={openIndex === idx}
+              onToggle={() => handleToggle(idx)}
+            />
+          ))}
         </div>
       </div>
     </section>
   );
 };
-
