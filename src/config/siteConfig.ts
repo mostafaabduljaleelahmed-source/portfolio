@@ -5,6 +5,8 @@ export interface ProjectMedia {
   caption?: string;
   /** Poster frame for a video, also used as its thumbnail. */
   poster?: string;
+  /** Phone captures are tall; the stage letterboxes them instead of cropping. */
+  orientation?: 'landscape' | 'portrait';
 }
 
 export interface ProjectCase {
@@ -84,6 +86,44 @@ export const SITE_CONFIG = {
         'Every admin action is a Supabase function that runs server-side behind an admin table and a confirmed email, so the hidden developer screen in the app cannot grant itself anything.'
       ],
       technologies: ['React 19', 'TypeScript', 'Vite', 'Capacitor 8', 'Supabase', 'PostgreSQL', 'GitHub Actions'],
+      media: [
+        {
+          type: 'video',
+          orientation: 'portrait',
+          src: '/media/negma-fit/walkthrough.mp4',
+          poster: '/media/negma-fit/poster.jpg',
+          alt: 'Screen recording of the Negma Fit inventory app on an Android phone',
+          caption: 'A full daily check on the phone: enter what went out and came back per product, and watch the totals build as you type.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/negma-fit/01-new-check.jpg',
+          alt: 'New check screen listing each product with its selling price and cost price',
+          caption: 'Each product carries its selling and cost price, so profit falls out of the same entry the staff were making anyway.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/negma-fit/02-check-totals.jpg',
+          alt: 'Check totals showing revenue, cost, net profit and profit margin',
+          caption: 'The check closes with revenue, cost, net profit and margin \u2014 the numbers the shop could not get off paper.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/negma-fit/03-dashboard.jpg',
+          alt: 'Dashboard with revenue and profit trend, quantity movement charts and product highlights',
+          caption: 'Revenue, profit and quantity plotted over the selected range, with highlights like best seller surfaced on top.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/negma-fit/04-product-performance.jpg',
+          alt: 'Per-product performance table with net sold, revenue, profit, margin and last sold date',
+          caption: 'Every product, including the ones that never moved \u2014 which is usually the more useful half of the list.'
+        }
+      ],
       results: [
         'Rebuilt release matches the original APK screen by screen — same layouts, same numbers, same behaviour on identical data.',
         'The dashboard reports on every product: best seller, highest return rate, items selling below cost, and anything that has not moved.'
@@ -173,6 +213,36 @@ export const SITE_CONFIG = {
         'Two scheduled digests rather than live notifications, so a busy group cannot turn into a stream of alerts.'
       ],
       technologies: ['Termux / Android', 'WhatsApp session', 'Gemini API', 'Telegram Bot API'],
+      media: [
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/uni-tracker/02-evening-digest.jpg',
+          alt: 'Telegram evening digest listing deadlines, overdue items and unanswered questions',
+          caption: 'The 6pm digest: what is due this week, what passed without being marked done, and which questions nobody answered.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/uni-tracker/01-announcements.jpg',
+          alt: 'Telegram cards for an assignment and a schedule question, each with a status',
+          caption: 'Each announcement arrives as a card with a status \u2014 confirmed, official, or still unanswered \u2014 and the group it came from.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/uni-tracker/03-schedule-change.jpg',
+          alt: 'Schedule change alert with reminder buttons, and WhatsApp reconnection notices',
+          caption: 'A schedule change with one-tap \u201cremind me\u201d and \u201cdone\u201d buttons. Underneath, the bot reporting its own WhatsApp session dropping and recovering.'
+        },
+        {
+          type: 'image',
+          orientation: 'portrait',
+          src: '/media/uni-tracker/04-weekly-digest.jpg',
+          alt: 'Digest summarising discussions across four groups',
+          caption: 'Seventeen messages across four groups, reduced to the three that actually needed reading.'
+        }
+      ],
       results: [
         'Running on free tiers only — no hosting bill and no paid API usage.',
         'Digests at 6am and 6pm, plus /summaries and /review on demand.'

@@ -42,6 +42,8 @@ export const ProjectGallery: React.FC<Props> = ({ media, projectTitle }) => {
 
   if (media.length === 0) return null;
 
+  const stageClass = `gallery-stage-media ${active.orientation === 'portrait' ? 'is-portrait' : ''}`;
+
   const renderItem = (item: ProjectMedia, full: boolean) =>
     item.type === 'video' ? (
       <video
@@ -50,7 +52,7 @@ export const ProjectGallery: React.FC<Props> = ({ media, projectTitle }) => {
         controls
         playsInline
         preload="metadata"
-        className={full ? 'gallery-full' : 'gallery-stage-media'}
+        className={full ? 'gallery-full' : stageClass}
         aria-label={item.alt}
       />
     ) : (
@@ -59,13 +61,13 @@ export const ProjectGallery: React.FC<Props> = ({ media, projectTitle }) => {
         alt={item.alt}
         loading="lazy"
         decoding="async"
-        className={full ? 'gallery-full' : 'gallery-stage-media'}
+        className={full ? 'gallery-full' : stageClass}
       />
     );
 
   return (
     <div className="gallery">
-      <figure className="gallery-stage">
+      <figure className={`gallery-stage ${active.orientation === 'portrait' ? 'is-portrait' : ''}`}>
         <button
           type="button"
           className="gallery-stage-btn"
@@ -89,7 +91,13 @@ export const ProjectGallery: React.FC<Props> = ({ media, projectTitle }) => {
               className={`gallery-thumb ${i === activeIndex ? 'is-active' : ''}`}
               onClick={() => setActiveIndex(i)}
             >
-              <img src={item.poster || item.src} alt="" loading="lazy" decoding="async" />
+              <img
+                src={item.poster || item.src}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className={item.orientation === 'portrait' ? 'is-portrait' : ''}
+              />
               {item.type === 'video' && (
                 <span className="gallery-thumb-play" aria-hidden="true">
                   <Play size={14} />

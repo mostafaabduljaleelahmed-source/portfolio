@@ -1083,3 +1083,30 @@ video.gallery-stage-media { cursor: default; object-fit: contain; background: #0
   .gallery-nav.prev { left: 6px; }
   .gallery-nav.next { right: 6px; }
 }
+
+/* Phone captures: letterbox on a dark panel rather than cropping a tall screen
+   into a landscape frame. */
+.gallery-stage.is-portrait {
+  background:
+    radial-gradient(60% 60% at 50% 0%, rgba(136, 217, 255, 0.05), transparent 70%),
+    #06090f;
+}
+.gallery-stage-media.is-portrait {
+  aspect-ratio: auto;
+  object-fit: contain;
+  max-height: min(68vh, 620px);
+  margin: 0 auto;
+  width: auto;
+  max-width: 100%;
+}
+.gallery-thumb img.is-portrait {
+  object-fit: contain;
+  background: #06090f;
+}
+
+/* A tall capture in a full-width frame leaves a lot of empty panel, so the
+   stage narrows to the capture instead. */
+.gallery-stage.is-portrait {
+  max-width: 440px;
+  margin-inline: auto;
+}
