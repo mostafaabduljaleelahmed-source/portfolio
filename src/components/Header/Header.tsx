@@ -3,7 +3,7 @@ import { SITE_CONFIG } from '../../config/siteConfig';
 import { useUI } from '../../context/UIContext';
 import { useAudio } from '../../context/AudioContext';
 import { easterEggService } from '../../services/easterEggService';
-import { Github, Linkedin, Terminal, Menu, X } from 'lucide-react';
+import { Github, Linkedin, FileText, Terminal, Menu, X } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { showToast, openCommandPalette } = useUI();
@@ -118,6 +118,17 @@ export const Header: React.FC = () => {
         {/* Desktop Header Actions */}
         <div className="header-controls desktop-only">
           <a
+            href={SITE_CONFIG.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="header-btn"
+            title="Open the CV (PDF)"
+            aria-label="Open the CV as a PDF"
+          >
+            <FileText size={14} color="var(--accent)" /> CV
+          </a>
+
+          <a
             href={SITE_CONFIG.github}
             target="_blank"
             rel="noopener noreferrer"
@@ -218,10 +229,20 @@ export const Header: React.FC = () => {
 
           <div className="mobile-drawer-actions">
             <a
-              href={SITE_CONFIG.github}
+              href={SITE_CONFIG.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="drawer-action-btn primary"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <FileText size={18} /> Open CV
+            </a>
+
+            <a
+              href={SITE_CONFIG.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="drawer-action-btn"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <Github size={18} /> GitHub

@@ -44,6 +44,7 @@ export const SITE_CONFIG = {
   whatsapp: 'https://wa.me/201011319867',
   github: 'https://github.com/mostafaabduljaleelahmed-source',
   linkedin: 'https://www.linkedin.com/in/mostafa-abduljaleel-7980893a3/',
+  resumeUrl: '/Mostafa-Abduljaleel-CV.pdf',
 
   stack: [
     { name: 'React & TypeScript', category: 'Web apps', tag: 'Vite' },
