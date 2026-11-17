@@ -9,9 +9,9 @@ interface TerminalLine {
 
 export const TerminalCLI: React.FC = () => {
   const [lines, setLines] = useState<TerminalLine[]>([
-    { text: '> booting portfolio kernel v2.6...', type: 'sys' },
-    { text: '> loading AI modules & .NET runtime...', type: 'sys' },
-    { text: '> rendering 3D living environment...', type: 'sys' },
+    { text: '> jaleelo.online — portfolio', type: 'sys' },
+    { text: '> web · mobile · automation', type: 'sys' },
+    { text: '> based in Cairo, Egypt', type: 'sys' },
     { text: '> welcome! Type "help" for interactive commands.', type: 'sys' }
   ]);
   const [inputVal, setInputVal] = useState<string>('');
@@ -43,10 +43,10 @@ export const TerminalCLI: React.FC = () => {
         break;
       case 'stack':
         newLines.push(
-          { text: '-> .NET 8 / C# (ASP.NET Core, EF Core, SQL Server)', type: 'sys' },
-          { text: '-> Flutter & Dart (Cross-Platform Mobile Apps)', type: 'sys' },
-          { text: '-> Python (Selenium, Automation, Playwright, LLMs)', type: 'sys' },
-          { text: '-> Frontend (React, TypeScript, Three.js, R3F, GSAP)', type: 'sys' }
+          { text: '-> Web      React, TypeScript, Vite', type: 'sys' },
+          { text: '-> Mobile   Capacitor, Flutter (Android builds)', type: 'sys' },
+          { text: '-> Backend  .NET 8 / C#, ASP.NET Core, Supabase, SQL Server', type: 'sys' },
+          { text: '-> Automate Python, n8n, Telegram bots, LLM APIs', type: 'sys' }
         );
         break;
       case 'matrix':

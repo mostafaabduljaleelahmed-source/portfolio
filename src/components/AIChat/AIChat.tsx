@@ -115,7 +115,7 @@ export const AIChat: React.FC = () => {
         >
           <div className="ai-chat-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 700, color: 'var(--accent)' }}>
             <Bot size={18} />
-            <span>Jaleelo.AI / Assistant v2.6</span>
+            <span>Ask about Mostafa</span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -216,16 +216,16 @@ export const AIChat: React.FC = () => {
             whiteSpace: 'nowrap'
           }}
         >
-          <div className="ai-chip" onClick={() => handleSend('', '💼 Available for work?')}>
+          <div className="ai-chip" onClick={() => handleSend('', 'Is he available for work?')}>
             <Briefcase size={12} /> Available?
           </div>
-          <div className="ai-chip" onClick={() => handleSend('', '🛠️ .NET 8 Architecture')}>
+          <div className="ai-chip" onClick={() => handleSend('', 'What does he build with?')}>
             <Code2 size={12} /> Tech Stack
           </div>
-          <div className="ai-chip" onClick={() => handleSend('', '🚀 EduSphere Case Study')}>
-            <Sparkles size={12} /> EduSphere
+          <div className="ai-chip" onClick={() => handleSend('', 'Tell me about the projects')}>
+            <Sparkles size={12} /> Projects
           </div>
-          <div className="ai-chip" onClick={() => handleSend('', '🎓 Cairo University Degree')}>
+          <div className="ai-chip" onClick={() => handleSend('', 'What is he studying?')}>
             <GraduationCap size={12} /> Degree
           </div>
         </div>

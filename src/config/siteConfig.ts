@@ -24,9 +24,9 @@ export interface ExperimentSignal {
 export const SITE_CONFIG = {
   name: 'Mostafa Abduljaleel Ahmed',
   handle: 'Jaleelo',
-  version: 'v2.6 OS',
-  title: 'Mostafa Abduljaleel — IT, Networking & Backend',
-  description: 'Information Technology student at Cairo University specializing in networking, building .NET backends and AI automation.',
+  version: 'v3.0',
+  title: 'Mostafa Abduljaleel — Web, Apps & Automation',
+  description: 'Information Technology student at Cairo University. I build web and mobile apps and automate the work around them.',
   location: 'CAIRO / EGYPT',
   email: 'mostafaabduljaleelahmed@gmail.com',
   whatsapp: 'https://wa.me/201011319867',
@@ -34,247 +34,143 @@ export const SITE_CONFIG = {
   linkedin: 'https://www.linkedin.com/in/mostafa-abduljaleel-7980893a3/',
 
   stack: [
-    { name: '.NET 8 / C#', category: 'Backend Architecture', tag: 'ASP.NET Core' },
-    { name: 'Flutter', category: 'Mobile Apps', tag: 'Cross-Platform' },
-    { name: 'Python', category: 'Automation & AI', tag: 'Selenium & LLMs' },
-    { name: 'React & TypeScript', category: 'Frontend', tag: 'Single Page Apps' },
-    { name: 'SQL Server & Entity Framework', category: 'Databases', tag: 'Relational Schemas' }
+    { name: 'React & TypeScript', category: 'Web apps', tag: 'Vite' },
+    { name: '.NET 8 / C#', category: 'Backend', tag: 'ASP.NET Core' },
+    { name: 'Flutter & Capacitor', category: 'Mobile', tag: 'Android' },
+    { name: 'Supabase & SQL Server', category: 'Data', tag: 'PostgreSQL' },
+    { name: 'Python & n8n', category: 'Automation', tag: 'Bots & LLM workflows' }
   ],
 
   projects: [
     {
       number: '01',
-      title: 'EduSphere / Tutoring OS',
-      meta: 'Founder & Lead Architect • .NET 8 • SQL Server • React',
-      summary: 'End-to-end management platform for tutoring operations with role-based access, automated ledger tracking, and session scheduling.',
-      problem: 'Private tutoring centers manage hundreds of students, recurring payments, and attendance across multiple instructors manually using fragmented spreadsheets, causing financial discrepancies and scheduling conflicts.',
-      goal: 'Architect a unified, deterministic management OS with zero ledger drift, role-based access control (RBAC), and automated student billing.',
-      architecture: 'Layered Architecture (ASP.NET Core REST API) with Repository Pattern, Entity Framework Core, SQL Server transactional isolation, and a React administrative dashboard.',
+      title: 'Negma Fit — Inventory',
+      meta: 'Built for a local shop • React + Capacitor • Supabase',
+      summary:
+        'An Android app the shop runs every day: record how much of each product went out and how much came back, and get revenue, cost, net profit and margin for that check — plus a dashboard across any date range.',
+      problem:
+        'The shop tracked stock by hand, so nobody could answer the questions that actually matter: which products make money, which keep coming back, and what a given week earned.',
+      goal:
+        'A daily stock-check app the staff can use without training, a dashboard that covers every product rather than a top-five list, and a licence I can manage remotely.',
+      architecture:
+        'React 19 and TypeScript on Vite, packaged for Android with Capacitor 8. Supabase (PostgreSQL) holds both the inventory data and the licensing tables, with admin actions behind server-side functions. The signed APK is built in GitHub Actions.',
       architectureDiagram: [
-        '[ Client Apps: Web Admin & Mobile ]',
-        '       │ HTTPS / JWT Auth',
-        '       ▼',
-        '[ ASP.NET Core 8 Web API Gateway ]',
-        '       │ Middleware Pipeline (Auth, Validation, Exception Handling)',
-        '       ▼',
-        '[ Application Service Layer ] ──▶ [ Quartz.NET Cron Jobs (Billing) ]',
-        '       │ EF Core / Dapper',
-        '       ▼',
-        '[ SQL Server Relational DB (ACID Transactions) ]'
+        '[ Android app (Capacitor shell + React UI) ]',
+        '       | HTTPS',
+        '       v',
+        '[ Supabase / PostgreSQL ]',
+        '       |-- inventory: products, checks, movements',
+        '       |-- licensing: activation_codes, license_status, last_seen_at',
+        '       `-- admin_* functions (server-side, confirmed email required)',
+        '',
+        '[ GitHub Actions ] --> signed APK'
       ],
       challenges: [
-        'Handling concurrent session bookings without double-booking classrooms or tutors.',
-        'Ensuring strict financial ledger immutability when recording partial or installment payments.'
+        'The original source was lost with an old laptop. The project had to be rebuilt from the shipped v1.0.3 APK and verified screen by screen against the original bundle.',
+        'Licensing had to work offline — a shop with a bad connection must never be locked out of its own stock records.'
       ],
       decisions: [
-        'Selected SQL Server row-level locking over optimistic concurrency to prevent booking collisions under high load.',
-        'Implemented JWT authentication with rotating refresh tokens stored in HttpOnly secure cookies for enterprise security.'
+        'The licence lock is cached on the device and re-checked on launch, on resume, when the connection returns and every 15 minutes — but being offline, or a server error, never locks the app.',
+        'Every admin action is a Supabase function that runs server-side behind an admin table and a confirmed email, so the hidden developer screen in the app cannot grant itself anything.'
       ],
-      technologies: ['.NET 8', 'C#', 'ASP.NET Core', 'EF Core', 'SQL Server', 'React', 'TypeScript', 'Tailwind CSS'],
+      technologies: ['React 19', 'TypeScript', 'Vite', 'Capacitor 8', 'Supabase', 'PostgreSQL', 'GitHub Actions'],
       results: [
-        '100% elimination of payment tracking discrepancies across test deployments.',
-        'Sub-50ms API query response time for schedule & attendance lookups.'
-      ],
-      code: 'https://github.com/mostafaabduljaleelahmed-source'
+        'Rebuilt release matches the original APK screen by screen — same layouts, same numbers, same behaviour on identical data.',
+        'The dashboard reports on every product: best seller, highest return rate, items selling below cost, and anything that has not moved.'
+      ]
     },
     {
       number: '02',
-      title: 'WhatsApp Messaging Assistant',
-      meta: 'Backend Developer • Twilio Sandbox • Node.js / Python API',
-      summary: 'Automated communication bridge connecting educational systems to parents and students via WhatsApp.',
-      problem: 'Sending broadcast alerts, exam results, and schedule reminders manually to hundreds of parents via personal phones was inefficient and prone to missing recipients.',
-      goal: 'Engineered an automated WhatsApp gateway capable of dispatching personalized notification templates with webhooks for delivery status.',
-      architecture: 'Asynchronous event-driven webhook handler built with Node.js/Python, integrated with Twilio WhatsApp Business API and rate-limited dispatch queues.',
-      architectureDiagram: [
-        '[ Trigger Event: System Alert / Exam Result ]',
-        '       │ HTTP Webhook / Queue',
-        '       ▼',
-        '[ Dispatcher Middleware ] ──▶ [ Rate Limiter (Token Bucket) ]',
-        '       │ REST API (HTTPS)',
-        '       ▼',
-        '[ Twilio WhatsApp Business Gateway ]',
-        '       │ Push Notification',
-        '       ▼',
-        '[ Recipient WhatsApp Client ]'
-      ],
+      title: 'Barber House',
+      meta: 'Live queue for a barbershop • Mobile-first web app',
+      summary:
+        'A web app for a barbershop built around a live queue instead of appointments: see who is in the chair, pick your service, and take your place in line.',
+      problem:
+        'Walk-in barbershops do not run on appointment slots. Customers either wait on the premises with no idea how long it will be, or call to ask.',
+      goal:
+        'Let someone check the queue from their phone, choose a service, and join the line — so the shop keeps its walk-in flow and customers stop guessing.',
+      architecture:
+        'Mobile-first single-page app deployed on Vercel, with a dark interface designed for phones held one-handed in a shop.',
       challenges: [
-        'Respecting WhatsApp Business API rate limits to prevent account throttling or flagging.',
-        'Ensuring fallback mechanisms when recipient phone numbers lack active WhatsApp accounts.'
+        'The queue is only useful if it reflects the shop in real time, so state has to stay in step across every open phone.'
       ],
       decisions: [
-        'Utilized a Token Bucket rate-limiting algorithm to guarantee compliance with messaging throughput limits.',
-        'Stored message delivery states asynchronously to provide real-time delivery confirmation dashboards.'
+        'Modelled around a queue rather than a booking calendar, which matches how walk-in barbershops actually work.'
       ],
-      technologies:['Python', 'Node.js', 'Twilio API', 'WhatsApp Business API', 'REST Webhooks', 'Redis Queue'],
+      technologies: ['TypeScript', 'Mobile-first UI', 'Vercel'],
       results: [
-        'Reduced parent broadcast notification delivery time from hours to under 30 seconds.',
-        '99.4% message delivery success rate across automated campaigns.'
+        'Deployed and reachable at barber-house-demo.vercel.app.'
       ],
-      code: 'https://github.com/mostafaabduljaleelahmed-source'
+      link: 'https://barber-house-demo.vercel.app'
     },
     {
       number: '03',
-      title: 'Classroom to Meet Watcher',
-      meta: 'Author • Python • Selenium • Automation',
-      summary: 'Real-time monitoring bot that automatically joins newly posted Google Meet links from Google Classroom feeds.',
-      problem: 'Instructors post Google Meet links at unpredictable times before lectures, forcing students to repeatedly refresh pages and risking missed session starts.',
-      goal: 'Construct a headless background process that monitors Google Classroom webhooks/DOM updates and immediately launches and authenticates into the Meet session.',
-      architecture: 'Python Selenium daemon with shadow DOM inspection, configurable polling intervals, audio/video auto-mute hooks, and desktop notification triggers.',
+      title: 'University Group Tracker',
+      meta: 'Personal automation • WhatsApp -> Gemini -> Telegram',
+      summary:
+        'A bot that reads my department’s WhatsApp groups, works out which messages are real announcements, and pushes them to me on Telegram with a digest every morning and evening.',
+      problem:
+        'Assignments, quizzes and registration deadlines get announced in class WhatsApp groups between hundreds of unrelated messages, and scroll out of sight within hours.',
+      goal:
+        'Follow a chosen set of groups, separate an actual announcement from chatter, check whether anyone replied confirming it, and deliver only that — on a channel I already watch.',
+      architecture:
+        'Runs in Termux on an Android phone with a linked WhatsApp session. Messages from the selected groups are classified with the Gemini API, and anything that survives the filter is delivered through a Telegram bot, which also serves on-demand commands.',
       architectureDiagram: [
-        '[ Background Daemon Script ]',
-        '       │ Headless Browser Polling',
-        '       ▼',
-        '[ Google Classroom Stream Inspector ]',
-        '       │ Regex Pattern Matching (meet.google.com/*)',
-        '       ▼',
-        '[ Auto-Join Executor ] ──▶ [ Mute Mic & Camera Flags ]',
-        '       │ OS System Notification',
-        '       ▼',
-        '[ Active Google Meet Session ]'
+        '[ WhatsApp groups ]',
+        '       | linked session (Termux, Android)',
+        '       v',
+        '[ Message filter ] --> [ Gemini API: is this an announcement? ]',
+        '       | deadlines, quizzes, registrations',
+        '       v',
+        '[ Telegram bot ] --> alerts + 6am / 6pm digests + /summaries, /review'
       ],
       challenges: [
-        'Bypassing dynamic Google login re-authentication challenges without manual intervention.',
-        'Parsing dynamically rendered React/Angular DOM elements inside Google Classroom streams.'
+        'A phone-hosted WhatsApp session drops. Keeping it linked and recovering on its own was most of the work.',
+        'The whole thing had to cost nothing, which ruled out paid hosting and paid model usage.'
       ],
       decisions: [
-        'Used persistent Chrome user profiles with OAuth tokens to bypass daily re-logins.',
-        'Implemented explicit dynamic wait conditions (`WebDriverWait`) rather than static timeouts for instant response upon link posting.'
+        'Kept it on a personal Android phone that is online anyway, instead of a cloud VM that wanted a prepayment — the free tiers I looked at all came with a card.',
+        'Two scheduled digests rather than live notifications, so a busy group cannot turn into a stream of alerts.'
       ],
-      technologies: ['Python', 'Selenium WebDriver', 'DOM Manipulation', 'OS Notifications', 'Chrome Profile Driver'],
+      technologies: ['Termux / Android', 'WhatsApp session', 'Gemini API', 'Telegram Bot API'],
       results: [
-        'Zero missed lectures across 2 academic semesters of automated monitoring.',
-        'Average response time under 1.8 seconds from link post to active meeting entry.'
-      ],
-      code: 'https://github.com/mostafaabduljaleelahmed-source'
-    },
-    {
-      number: '04',
-      title: 'JLJL Compositing Engine',
-      meta: 'Creator • HTML5 Canvas • JavaScript',
-      summary: 'High-performance client-side image rendering engine generating dynamic product mockups.',
-      problem: 'Creating artwork sticker previews across multiple color variations and product angles required repetitive manual graphic editor workflows.',
-      goal: 'Develop an in-browser HTML5 Canvas compositing tool that dynamically layers raw artwork onto product templates in real time.',
-      architecture: 'Pure JavaScript Canvas rendering pipeline with non-destructive layer blending, asset preloading, and high-DPI export options.',
-      architectureDiagram: [
-        '[ User Asset Upload / Artwork ]',
-        '       │ File API / Image Buffer',
-        '       ▼',
-        '[ HTML5 Canvas Compositing Engine ]',
-        '       │ Matrix Transformations (Scale, Rotate, Blend)',
-        '       ▼',
-        '[ Template Layer Overlay ] ──▶ [ Color Tint Shader ]',
-        '       │ Client-side PNG Render',
-        '       ▼',
-        '[ High-Resolution Product Mockup Export ]'
-      ],
-      challenges: [
-        'Maintaining 60 FPS viewport rendering during multi-layer transformation and zooming.',
-        'Exporting crisp, print-ready 300 DPI PNG assets without browser memory crashes.'
-      ],
-      decisions: [
-        'Adopted offscreen canvas buffers (`OffscreenCanvas`) for complex blend operations to preserve UI thread responsiveness.',
-        'Built pure Vanilla JS calculations to eliminate external heavy graphics library dependencies.'
-      ],
-      technologies: ['JavaScript ES6+', 'HTML5 Canvas API', 'OffscreenCanvas', 'CSS3', 'Web APIs'],
-      results: [
-        'Accelerated mockup production speed by over 90% (from 5 minutes per image to under 10 seconds).',
-        'Zero external runtime dependencies for maximum portability.'
-      ],
-      code: 'https://github.com/mostafaabduljaleelahmed-source'
-    },
-    {
-      number: '05',
-      title: 'AI Folder Intelligence Classifier',
-      meta: 'Author • Python • LLM Classification API',
-      summary: 'Intelligent file system organizer utilizing natural language understanding to categorize unorganized downloads.',
-      problem: 'Developers and students accumulate chaotic download folders containing diverse file types, research papers, source code snippets, and assets.',
-      goal: 'Build an automated CLI utility that inspects file metadata and sample content, querying an LLM to categorize files into contextual directory trees.',
-      architecture: 'CLI pipeline written in Python, combining file signature analysis, light text extraction, Claude API classification, and safe filesystem operations.',
-      architectureDiagram: [
-        '[ Unsorted Directory Stream ]',
-        '       │ Metadata & Header Extraction',
-        '       ▼',
-        '[ Content Summarizer & MIME Parser ]',
-        '       │ JSON Prompt Payload',
-        '       ▼',
-        '[ LLM Classification Service (Claude API) ]',
-        '       │ Category Decision & Target Path',
-        '       ▼',
-        '[ Safe Atomic File Mover ] ──▶ [ Audit Log Manifest ]'
-      ],
-      challenges: [
-        'Preventing accidental file overwrites or data loss during batch directory reorganization.',
-        'Optimizing API token usage by sending concise file previews rather than full binary files.'
-      ],
-      decisions: [
-        'Created a mandatory JSON dry-run manifest step allowing users to inspect and approve moves before execution.',
-        'Implemented fallback rule-based regex classifiers for common binary extensions (e.g. .pdf, .zip, .exe) to reduce API cost.'
-      ],
-      technologies: ['Python', 'Claude API / LLM Integration', 'PyPDF2 / DocX Parsers', 'JSON Schema', 'CLI Argparse'],
-      results: [
-        'Organized over 3,000 files in benchmark tests with 98% categorical accuracy.',
-        'Reduced manual desktop cleanup time to a single 5-second terminal invocation.'
-      ],
-      code: 'https://github.com/mostafaabduljaleelahmed-source'
-    },
-    {
-      number: '06',
-      title: 'Lightweight To-Do PWA',
-      meta: 'Author • Vanilla JS • Progressive Web App',
-      summary: 'Offline-first, installable productivity web application focused on instant interaction and zero bloat.',
-      problem: 'Modern task management web apps are heavily bloated with third-party tracking, long initial load times, and broken offline capabilities.',
-      goal: 'Build a zero-dependency Progressive Web App with instant startup, offline persistence, and accessible keyboard shortcuts.',
-      architecture: 'Vanilla JS single-file architecture with IndexedDB storage, Service Worker cache-first strategy, and Web Manifest for installability.',
-      architectureDiagram: [
-        '[ Web / Mobile Client ]',
-        '       │ Service Worker Interceptor',
-        '       ▼',
-        '[ Cache First Asset Storage ] ──▶ [ Offline Fallback Shell ]',
-        '       │ Local Data Sync',
-        '       ▼',
-        '[ IndexedDB Local Storage API ]'
-      ],
-      challenges: [
-        'Achieving 100/100 Lighthouse performance, accessibility, and PWA scores.',
-        'Synchronizing local state changes reliably without external frameworks.'
-      ],
-      decisions: [
-        'Wrote zero third-party UI framework code to keep total bundle size under 15 KB.',
-        'Used native Custom Events for clean component state reactivity.'
-      ],
-      technologies: ['JavaScript (ES6)', 'Service Workers', 'IndexedDB', 'Web App Manifest', 'CSS Variables'],
-      results: [
-        '100/100 Lighthouse audit score across Performance, Accessibility, Best Practices, and PWA.',
-        'Sub-100ms cold start load time on standard mobile network connections.'
-      ],
-      code: 'https://github.com/mostafaabduljaleelahmed-source'
+        'Running on free tiers only — no hosting bill and no paid API usage.',
+        'Digests at 6am and 6pm, plus /summaries and /review on demand.'
+      ]
     }
   ] as ProjectCase[],
 
   experiments: [
     {
-      tag: 'Agents & Workflows',
-      title: 'Internship Application Automation',
-      description: 'Exploring Python & Playwright agent loops to streamline application submissions, format resumes per job description, and log response statuses.'
+      tag: 'Publishing tools',
+      title: 'Jaleelo Studio',
+      description:
+        'My own tool for publishing Reels to a Facebook Page and pushing drafts into the TikTok inbox, through the Meta and TikTok developer APIs.'
     },
     {
-      tag: 'Classroom Watcher',
-      title: 'Automated Meeting Entry',
-      description: 'Python Selenium daemon monitoring Google Classroom feeds for newly published meeting links with immediate audio/video muted joining.'
+      tag: 'ASP.NET Core',
+      title: 'Auto-graded learning platform',
+      description:
+        'A Web API for teaching programming: hand out exercises, run submitted code against test cases, and grade them without a human in the loop.'
     },
     {
-      tag: 'LLM Classification',
-      title: 'FileSystem Intelligence',
-      description: 'Combining file metadata inspection and LLM classification to automatically organize multi-terabyte download directories into semantic subfolders.'
+      tag: 'Back office',
+      title: 'Academy admin system',
+      description:
+        'An internal system for a programming and languages academy — students, groups, attendance and payments in one place instead of spreadsheets.'
     }
   ] as ExperimentSignal[],
 
   aiKnowledge: {
-    available: 'Mostafa is currently OPEN for Software Engineering Internships, Junior .NET Backend Roles, and Systems / Automation Engineering positions.',
-    stack: 'Core Stack: .NET 8 / C#, ASP.NET Core REST APIs, SQL Server, Entity Framework Core, Flutter, Python (Selenium / Webhooks / LLM Workflows), React, TypeScript, Git.',
-    projects: 'Featured Projects: EduSphere (.NET Tutoring OS), WhatsApp Business Messaging Assistant, Classroom-to-Meet Python Watcher, JLJL Canvas Compositor, AI Folder Intelligence Classifier, Lightweight To-Do PWA.',
-    university: 'Education: Computer Science student at Faculty of Computers and Artificial Intelligence, Cairo University.',
-    contact: 'Email: mostafaabduljaleelahmed@gmail.com | WhatsApp: +20 101 131 9867 | LinkedIn: Mostafa Abduljaleel'
+    available:
+      'Mostafa is open to internships and junior roles — web and mobile development, backend (.NET), and automation work.',
+    stack:
+      'Core stack: React and TypeScript, .NET 8 / C# with ASP.NET Core, Flutter and Capacitor for Android, Supabase and SQL Server, and Python for automation and LLM workflows.',
+    projects:
+      'Featured work: Negma Fit Inventory (a daily stock-check Android app on Supabase), Barber House (a live-queue web app for a barbershop), and a University Group Tracker that filters WhatsApp group announcements through Gemini and delivers them on Telegram.',
+    university:
+      'Education: Information Technology at Cairo University, Faculty of Computers and Artificial Intelligence.',
+    contact:
+      'Email: mostafaabduljaleelahmed@gmail.com | WhatsApp: +20 101 131 9867 | LinkedIn: Mostafa Abduljaleel'
   } as Record<string, string>
 };
-

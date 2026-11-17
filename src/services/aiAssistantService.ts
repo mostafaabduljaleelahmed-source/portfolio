@@ -16,7 +16,7 @@ class AIAssistantService {
       {
         id: 'init-msg',
         sender: 'assistant',
-        text: "Hello! I am Mostafa's AI Assistant. Ask me anything about his .NET 8 background, EduSphere architecture, recruiter questions, or ask for code samples!",
+        text: "Hi \u2014 ask me about Mostafa's projects, what he builds with, or how to reach him. I answer from a short fixed set of notes about him, not from a model.",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ];
@@ -74,36 +74,46 @@ class AIAssistantService {
     return formatted;
   }
 
+  /**
+   * Answers come from this fixed set, not from a model. Keep every claim here
+   * true and checkable against the projects on the page.
+   */
   private generateKnowledgeResponse(query: string): string {
     const q = query.toLowerCase();
 
-    // RECRUITER AVAILABILITY & INTERNSHIPS
     if (q.includes('available') || q.includes('hire') || q.includes('recruiter') || q.includes('job') || q.includes('internship') || q.includes('role')) {
-      return `Mostafa is **OPEN for Software Engineering Internships**, **Junior .NET Backend Developer roles**, and **Freelance Automation projects**!\n\nKey Highlights:\n- **Location**: Cairo, Egypt (Open to Remote & Relocation)\n- **Education**: Computer Science at Cairo University (FCAI)\n- **Core Focus**: High-throughput ASP.NET Core REST APIs, Clean Architecture, and AI Automations.\n- **Direct Contact**: email: mostafaabduljaleelahmed@gmail.com | WhatsApp: +20 101 131 9867`;
+      return `Mostafa is open to **internships and junior roles**, and to freelance project work.\n\n- **Based in**: Cairo, Egypt \u2014 open to remote\n- **Studying**: Information Technology at Cairo University (FCAI)\n- **Works on**: web and mobile apps, .NET backends, and automation\n- **Contact**: mostafaabduljaleelahmed@gmail.com | WhatsApp +20 101 131 9867`;
     }
 
-    // TECH STACK & .NET 8
-    if (q.includes('stack') || q.includes('dotnet') || q.includes('c#') || q.includes('backend') || q.includes('skills')) {
-      return `Mostafa's core technical stack includes:\n\n- **Backend**: .NET 8 / C#, ASP.NET Core REST APIs, Entity Framework Core, SQL Server\n- **Mobile & Automation**: Flutter (Cross-platform), Python (Selenium & Claude API automation)\n- **Frontend & 3D**: React, TypeScript, Three.js, React Three Fiber, GSAP\n- **DevOps**: Docker, Git, CI/CD, Vercel\n\nHere is an example of Mostafa's C# Clean Architecture Controller pattern:\n\`\`\`csharp\n[ApiController]\n[Route("api/[controller]")]\npublic class SystemStatusController : ControllerBase\n{\n    private readonly ITelemetryService _telemetry;\n    public SystemStatusController(ITelemetryService telemetry) => _telemetry = telemetry;\n\n    [HttpGet("health")]\n    public async Task<IActionResult> GetHealthAsync()\n    {\n        var status = await _telemetry.GetHealthMetricsAsync();\n        return Ok(new { Status = "ONLINE", Version = "v2.6", Metrics = status });\n    }\n}\n\`\`\``;
+    if (q.includes('stack') || q.includes('dotnet') || q.includes('c#') || q.includes('backend') || q.includes('skills') || q.includes('tech')) {
+      return `What Mostafa builds with:\n\n- **Web**: React, TypeScript, Vite\n- **Mobile**: Capacitor and Flutter, shipping Android builds\n- **Backend**: .NET 8 / C# with ASP.NET Core, Supabase (PostgreSQL), SQL Server\n- **Automation**: Python, n8n, Telegram bots, LLM APIs\n- **Around it**: Git and GitHub Actions, Vercel`;
     }
 
-    // EDUSPHERE & PROJECTS
-    if (q.includes('edusphere') || q.includes('project') || q.includes('work') || q.includes('portfolio')) {
-      return `Here are Mostafa's top production projects:\n\n1. **EduSphere / Tutoring OS**: Founder & Full-Stack Architect built with .NET 8, C#, and SQL Server. Solved zero accounting drift for high-density student ledgers.\n2. **WhatsApp Messaging Assistant**: Automated bulk parent/student messaging via Twilio Sandbox & WhatsApp Business API.\n3. **Classroom to Meet Watcher**: Python & Selenium process monitoring Google Classroom and joining Meet links automatically.\n4. **JLJL Canvas Compositor**: JS Canvas tool turning raw artwork into product mockups.\n5. **AI Folder Organizer**: Python AI classifier sorting downloads automatically.`;
+    if (q.includes('negma') || q.includes('nigma') || q.includes('inventory') || q.includes('shop')) {
+      return `**Negma Fit \u2014 Inventory** is a daily stock-check app for a local shop: record what went out and what came back per product, and see revenue, cost, net profit and margin, with a dashboard over any date range.\n\nReact 19 and TypeScript, packaged for Android with Capacitor 8, on Supabase.\n\nTwo things worth knowing: the original source was lost with an old laptop, so the project was rebuilt from the shipped APK and verified screen by screen \u2014 and the licence check is built so that being offline never locks the shop out of its own records.`;
     }
 
-    // CODE SAMPLE REQUEST
-    if (q.includes('code') || q.includes('sample') || q.includes('example')) {
-      return `Here is a sample Python automation script Mostafa built for Google Meet watching:\n\`\`\`python\nimport time\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\n\ndef monitor_classroom(target_url):\n    driver = webdriver.Chrome()\n    driver.get(target_url)\n    print("[watcher] Monitoring Classroom for Meet link...")\n    \n    while True:\n        links = driver.find_elements(By.XPATH, "//a[contains(@href, 'meet.google.com')]")\n        if links:\n            meet_url = links[0].get_attribute('href')\n            print(f"[found] Meet Link detected: {meet_url}")\n            driver.get(meet_url)\n            break\n        time.sleep(5)\n\`\`\``;
+    if (q.includes('barber') || q.includes('queue')) {
+      return `**Barber House** is a web app for a barbershop built around a live queue instead of appointments \u2014 see who is in the chair, pick a service, and take your place in line. Mobile-first and dark, because it is used on a phone inside a shop.\n\nLive at barber-house-demo.vercel.app.`;
     }
 
-    // EDUCATION & CAIRO UNIVERSITY
-    if (q.includes('education') || q.includes('university') || q.includes('cairo') || q.includes('degree')) {
-      return `Mostafa is currently pursuing his Bachelor of Computer Science degree at **Faculty of Computers and Artificial Intelligence, Cairo University** (FCAI).\n\nCourses & Specialization: Data Structures, Algorithms, Software Engineering, Database Systems (SQL), Operating Systems, and Artificial Intelligence.`;
+    if (q.includes('bot') || q.includes('whatsapp') || q.includes('telegram') || q.includes('tracker')) {
+      return `The **University Group Tracker** reads his department's WhatsApp groups, decides which messages are real announcements, and pushes them to Telegram \u2014 with a digest at 6am and 6pm.\n\nIt runs in Termux on an Android phone, classifies messages through the Gemini API, and delivers through a Telegram bot. The whole thing stays on free tiers, which is why it lives on a phone rather than a cloud VM.`;
     }
 
-    // DEFAULT ANSWER
-    return `Mostafa Abduljaleel Ahmed (Jaleelo) is a .NET 8 / C# Full-Stack Developer, AI Automation Engineer, and Computer Science student at Cairo University.\n\nHe specializes in building scalable backend systems, cross-platform Flutter applications, and intelligent Python automations.\n\nFeel free to ask about his **availability**, **EduSphere case study**, **tech stack**, or ask for **code samples**!`;
+    if (q.includes('project') || q.includes('work') || q.includes('portfolio') || q.includes('built')) {
+      return `Three projects are written up on this page:\n\n1. **Negma Fit \u2014 Inventory**: a daily stock-check Android app for a shop, React + Capacitor on Supabase.\n2. **Barber House**: a live-queue web app for a barbershop, instead of appointment booking.\n3. **University Group Tracker**: a bot that filters WhatsApp group announcements through Gemini and sends them to Telegram.\n\nAsk about any of them by name for the details.`;
+    }
+
+    if (q.includes('education') || q.includes('university') || q.includes('cairo') || q.includes('degree') || q.includes('study')) {
+      return `Mostafa is studying for a **BSc in Information Technology** at the **Faculty of Computers and Artificial Intelligence, Cairo University**, started 2023.\n\nHis department track is networking, and alongside it he works on web and mobile development and automation.`;
+    }
+
+    if (q.includes('contact') || q.includes('email') || q.includes('reach')) {
+      return `Email: **mostafaabduljaleelahmed@gmail.com**\nWhatsApp: **+20 101 131 9867**\nGitHub and LinkedIn are linked in the header.`;
+    }
+
+    return `Mostafa Abduljaleel (Jaleelo) is an Information Technology student at Cairo University who builds web and mobile apps and automates the work around them.\n\nAsk about **his projects**, **what he builds with**, **his studies**, or **how to reach him**.`;
   }
 
   public streamResponse(

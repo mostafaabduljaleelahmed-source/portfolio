@@ -10,18 +10,18 @@ export const Hero: React.FC = () => {
         <div className="hero-copy">
           <div className="eyebrow hero-eyebrow">
             <span className="pulse-dot"></span>
-            Available for Software Engineering Roles & Internships
+            Available for internships & junior roles
           </div>
           
           <h1 className="hero-title">
-            Systems, Backend Architecture & <em className="hero-accent-text">AI Automation.</em>
+            Websites, apps, and the <em className="hero-accent-text">automation that runs them.</em>
           </h1>
           
           <p className="hero-subtitle">
             I’m <strong>Mostafa Abduljaleel</strong>, an Information Technology student at Cairo
-            University, specializing in <strong>networking</strong>. I build backends in
-            <strong> .NET</strong>, automate the boring parts with Python and AI, and spend my
-            lab time on routing, switching and infrastructure.
+            University. I build <strong>web and mobile apps</strong> — a shop’s daily inventory
+            app, a live queue for a barbershop — and I <strong>automate</strong> the work around
+            them, from publishing tools to bots that read my class group chats so I don’t have to.
           </p>
 
           <div className="hero-cta-group">
