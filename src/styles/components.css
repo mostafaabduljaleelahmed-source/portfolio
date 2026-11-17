@@ -913,3 +913,173 @@ footer {
 .skip-to-content:focus {
   left: 0;
 }
+
+/* =====================================================================
+   PROJECT GALLERY
+   Screens and clips come before the write-up: a visitor should see the
+   work without leaving the page or installing anything.
+   ===================================================================== */
+.gallery { margin-bottom: var(--space-sm); }
+
+.gallery-stage {
+  margin: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: #06090f;
+}
+.gallery-stage-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  line-height: 0;
+}
+.gallery-stage-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.gallery-stage-media {
+  width: 100%;
+  height: auto;
+  display: block;
+  aspect-ratio: 1512 / 785;
+  object-fit: cover;
+  object-position: top center;
+}
+video.gallery-stage-media { cursor: default; object-fit: contain; background: #000; }
+
+.gallery-caption {
+  margin: 0;
+  padding: 10px var(--space-xs) 12px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.gallery-thumbs {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.gallery-thumb {
+  position: relative;
+  flex: 0 0 auto;
+  width: 112px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #06090f;
+  cursor: pointer;
+  line-height: 0;
+  opacity: 0.55;
+  transition: opacity .2s ease, border-color .2s ease;
+}
+.gallery-thumb:hover { opacity: 0.85; }
+.gallery-thumb.is-active { opacity: 1; border-color: var(--accent); }
+.gallery-thumb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gallery-thumb img {
+  width: 100%;
+  height: 62px;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.gallery-thumb-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.case-thumb {
+  width: 76px;
+  height: 46px;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .case-thumb { display: none; }
+}
+
+.case-media-missing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 var(--space-sm);
+  padding: 12px var(--space-xs);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 0.84rem;
+}
+
+/* Lightbox */
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(3, 5, 8, 0.94);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 5vw, 56px);
+  cursor: zoom-out;
+}
+.gallery-lightbox-inner {
+  max-width: min(1400px, 100%);
+  max-height: 100%;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gallery-full {
+  max-width: 100%;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: var(--radius-sm);
+}
+.gallery-lightbox .gallery-caption {
+  background: none;
+  padding: 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.gallery-close,
+.gallery-nav {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--min-touch-target);
+  height: var(--min-touch-target);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  cursor: pointer;
+}
+.gallery-close:hover,
+.gallery-nav:hover { background: rgba(255, 255, 255, 0.16); }
+.gallery-close { top: 18px; right: 18px; }
+.gallery-nav.prev { left: 14px; }
+.gallery-nav.next { right: 14px; }
+@media (max-width: 640px) {
+  .gallery-nav.prev { left: 6px; }
+  .gallery-nav.next { right: 6px; }
+}

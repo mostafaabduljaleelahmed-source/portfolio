@@ -1,3 +1,12 @@
+export interface ProjectMedia {
+  type: 'image' | 'video';
+  src: string;
+  alt: string;
+  caption?: string;
+  /** Poster frame for a video, also used as its thumbnail. */
+  poster?: string;
+}
+
 export interface ProjectCase {
   number: string;
   title: string;
@@ -11,6 +20,7 @@ export interface ProjectCase {
   decisions: string[];
   technologies: string[];
   results: string[];
+  media?: ProjectMedia[];
   link?: string;
   code?: string;
 }
@@ -82,24 +92,54 @@ export const SITE_CONFIG = {
     {
       number: '02',
       title: 'Barber House',
-      meta: 'Live queue for a barbershop • Mobile-first web app',
+      meta: 'Live queue for a barbershop \u00b7 Bilingual \u00b7 Web app',
       summary:
-        'A web app for a barbershop built around a live queue instead of appointments: see who is in the chair, pick your service, and take your place in line.',
+        'A barbershop runs on walk-ins, not appointment slots. This is the shop floor on your phone: who is in each chair, how many minutes are left, who is next, and a button to take your own place in the line.',
       problem:
-        'Walk-in barbershops do not run on appointment slots. Customers either wait on the premises with no idea how long it will be, or call to ask.',
+        'A walk-in shop cannot sell you a 4:30 slot, so the customer\u2019s only options are to sit in the shop not knowing how long it will be, or to phone and ask. The barbers get interrupted either way.',
       goal:
-        'Let someone check the queue from their phone, choose a service, and join the line — so the shop keeps its walk-in flow and customers stop guessing.',
+        'Put the live state of the shop on a phone screen \u2014 every chair, every turn \u2014 so someone can decide from home whether to walk over now, and join the line before they leave.',
       architecture:
-        'Mobile-first single-page app deployed on Vercel, with a dark interface designed for phones held one-handed in a shop.',
+        'A single page with a live view of each barber station, a shared waiting list, and a staff dashboard for confirming and calling people through. The whole interface is bilingual, English and Arabic.',
       challenges: [
-        'The queue is only useful if it reflects the shop in real time, so state has to stay in step across every open phone.'
+        'A queue is only worth looking at if it is correct right now, so every open phone has to agree with the shop floor without anyone pressing refresh.',
+        'Someone who gets called while they are still walking over should not lose their turn, and someone who never shows up should not hold up the chair.'
       ],
       decisions: [
-        'Modelled around a queue rather than a booking calendar, which matches how walk-in barbershops actually work.'
+        'Built around a queue rather than a booking calendar \u2014 the shop keeps its walk-in flow instead of being forced into slots it does not use.',
+        'A called customer\u2019s chair is held for two minutes: long enough to cover the walk in, short enough that the barber is not left waiting.',
+        'Each service carries its own duration, so the \u201cminutes left\u201d and the estimate for everyone further down the line come out of the queue itself rather than being guessed.'
       ],
-      technologies: ['TypeScript', 'Mobile-first UI', 'Vercel'],
+      technologies: ['TypeScript', 'Live queue state', 'Bilingual UI (EN / AR)', 'Vercel'],
       results: [
-        'Deployed and reachable at barber-house-demo.vercel.app.'
+        'Shows in-the-chair, in-line and walk-in wait at a glance, with per-customer estimates down the queue.',
+        'Staff dashboard for confirming walk-ins and calling the next customer.'
+      ],
+      media: [
+        {
+          type: 'image',
+          src: '/media/barber-house/01-hero.jpg',
+          alt: 'Barber House landing page showing the live counters for chairs, line and walk-in wait',
+          caption: 'The first thing you see is the shop\u2019s current state: two in the chair, three in line, no wait for a walk-in.'
+        },
+        {
+          type: 'image',
+          src: '/media/barber-house/02-live-queue.jpg',
+          alt: 'Live queue view with now-serving cards and the waiting list',
+          caption: 'Each chair shows who is in it and how long is left; the waiting list shows each person\u2019s service, barber and estimate.'
+        },
+        {
+          type: 'image',
+          src: '/media/barber-house/03-services.jpg',
+          alt: 'Services menu listing each cut with its duration and price in EGP',
+          caption: 'Every service carries a duration, which is what the queue estimates are calculated from.'
+        },
+        {
+          type: 'image',
+          src: '/media/barber-house/04-barbers.jpg',
+          alt: 'Barber profiles showing live cutting or available status',
+          caption: 'Each barber shows live status, so you can ask for one by name \u2014 or take whoever is free.'
+        }
       ],
       link: 'https://barber-house-demo.vercel.app'
     },

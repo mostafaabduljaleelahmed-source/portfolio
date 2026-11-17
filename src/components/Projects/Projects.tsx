@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { SITE_CONFIG, ProjectCase } from '../../config/siteConfig';
 import { useAudio } from '../../context/AudioContext';
-import { Github, ExternalLink, ChevronDown, Cpu, Target, Layers, Workflow, ShieldCheck, Check } from 'lucide-react';
+import { Github, ExternalLink, ChevronDown, Cpu, Target, Layers, Workflow, ShieldCheck, Check, ImageIcon } from 'lucide-react';
+import { ProjectGallery } from './ProjectGallery';
 
 interface CaseStudyProps {
   project: ProjectCase;
@@ -11,6 +12,8 @@ interface CaseStudyProps {
 
 const CaseStudy: React.FC<CaseStudyProps> = ({ project, isOpen, onToggle }) => {
   const panelId = `case-panel-${project.number}`;
+  const media = project.media ?? [];
+  const cover = media[0];
 
   return (
     <article className={`case ${isOpen ? 'is-open' : ''}`}>
@@ -22,6 +25,17 @@ const CaseStudy: React.FC<CaseStudyProps> = ({ project, isOpen, onToggle }) => {
         aria-controls={panelId}
       >
         <span className="case-index">{project.number}</span>
+
+        {cover && (
+          <img
+            className="case-thumb"
+            src={cover.poster || cover.src}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            aria-hidden="true"
+          />
+        )}
 
         <span className="case-identity">
           <h3>{project.title}</h3>
@@ -48,6 +62,14 @@ const CaseStudy: React.FC<CaseStudyProps> = ({ project, isOpen, onToggle }) => {
 
       {isOpen && (
         <div className="case-body" id={panelId}>
+          {media.length > 0 ? (
+            <ProjectGallery media={media} projectTitle={project.title} />
+          ) : (
+            <p className="case-media-missing">
+              <ImageIcon size={14} aria-hidden="true" /> Screens and a short clip for this one are on the way.
+            </p>
+          )}
+
           <div className="case-block">
             <h4>Overview</h4>
             <p>{project.summary}</p>
