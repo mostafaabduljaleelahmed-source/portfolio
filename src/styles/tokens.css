@@ -13,7 +13,9 @@
   --bone-sunk:  #E8E3D8;   /* cards on paper */
   --bone-line:  rgba(12, 12, 14, 0.12);
 
-  --clay:       #D4603A;   /* accent */
+  --clay:       #D4603A;   /* accent, on ink: 5.15:1 */
+  --clay-deep:  #B84C28;   /* the same accent for light surfaces: 4.5:1 on bone,
+                              and 5.12:1 under white button text */
   --clay-soft:  #E8926E;
   --clay-wash:  rgba(212, 96, 58, 0.10);
   --moss:       #5E7A52;   /* secondary, for confirmations only */
@@ -21,10 +23,10 @@
   /* Foreground ramps, named by the surface they sit on */
   --on-ink:        #F4F1EA;
   --on-ink-muted:  #A3A09A;
-  --on-ink-faint:  #6B6965;
+  --on-ink-faint:  #7C7A75;
   --on-bone:       #15151A;
   --on-bone-muted: #5A5751;
-  --on-bone-faint: #8A8681;
+  --on-bone-faint: #706D68;
 
   /* Legacy aliases, so older rules keep resolving */
   --accent: var(--clay);

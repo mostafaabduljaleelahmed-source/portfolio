@@ -27,11 +27,7 @@ export const About: React.FC = () => (
       <div className="approach-grid">
         <div className="approach-intro">
           <p className="eyebrow">Approach / 02</p>
-          <h2>
-            Useful beats
-            <br />
-            impressive.
-          </h2>
+          <h2>Useful beats impressive.</h2>
           <p className="lede">
             Most of what I build is small software for people who were doing the job on
             paper. That sets the bar: it has to be quicker than the paper on the first day.

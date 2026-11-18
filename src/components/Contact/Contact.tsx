@@ -14,9 +14,7 @@ export const Contact: React.FC = () => (
     <div className="wrap">
       <p className="eyebrow">Contact / 04</p>
       <h2 className="contact-title">
-        Got something
-        <br />
-        that should <em>work better?</em>
+        Got something that should <em>work better?</em>
       </h2>
       <p className="lede">
         Open to internships and junior roles, and to freelance work. Cairo, or remote.

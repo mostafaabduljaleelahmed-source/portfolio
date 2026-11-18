@@ -13,13 +13,7 @@ export const Hero: React.FC = () => (
         </p>
 
         <h1 className="hero-title">
-          I build the small
-          <br />
-          software that
-          <br />
-          <em>real businesses</em>
-          <br />
-          run on.
+          I build the small software that <em>real businesses</em> run on.
         </h1>
 
         <p className="hero-lede">
