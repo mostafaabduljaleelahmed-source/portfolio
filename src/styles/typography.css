@@ -1,6 +1,6 @@
 /* Self-hosted: no third-party request on first paint, and the type is
    versioned with the project instead of depending on a CDN. */
-@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/archivo';
 @import '@fontsource-variable/inter-tight';
 @import '@fontsource-variable/jetbrains-mono';
 
@@ -35,8 +35,8 @@ h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-optical-sizing: auto;
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
   text-wrap: balance;
 }
 h1 { font-size: var(--step-5); font-weight: 700; }

@@ -44,7 +44,7 @@
      Bricolage Grotesque carries the display voice; Inter Tight does
      the reading; JetBrains Mono handles labels and numerals.
      --------------------------------------------------------------- */
-  --font-display: 'Bricolage Grotesque Variable', 'Inter Tight Variable', system-ui, sans-serif;
+  --font-display: 'Archivo Variable', 'Inter Tight Variable', system-ui, sans-serif;
   --font-body:    'Inter Tight Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono Variable', ui-monospace, 'SF Mono', monospace;
 
@@ -85,9 +85,16 @@
   --measure: 62ch;
   --container: 1320px;
   --gutter: clamp(20px, 5vw, 80px);
-  --radius-sm: 4px;
-  --radius-md: 10px;
-  --radius-lg: 20px;
+  /* Swiss: sharp corners throughout. Kept as tokens so the whole system
+     can be softened again from one place. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  /* The grid the layout is built on */
+  --cols: 12;
+  --rule: 1px solid var(--ink-line);
+  --rule-bone: 1px solid var(--bone-line);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
