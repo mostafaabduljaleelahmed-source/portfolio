@@ -1,70 +1,58 @@
 import React from 'react';
-import { TerminalCLI } from './TerminalCLI';
 import { SITE_CONFIG } from '../../config/siteConfig';
-import { Github, Linkedin, Mail, ArrowDown } from 'lucide-react';
+import { WorkCluster } from './WorkCluster';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
 
-export const Hero: React.FC = () => {
-  return (
-    <section className="hero-playground" id="hero-section" aria-label="Candidate Overview & Hero Section">
-      <div className="hero-main-layout">
-        <div className="hero-copy">
-          <div className="eyebrow hero-eyebrow">
-            <span className="pulse-dot"></span>
-            Available for internships & junior roles
-          </div>
-          
-          <h1 className="hero-title">
-            Websites, apps, and the <em className="hero-accent-text">automation that runs them.</em>
-          </h1>
-          
-          <p className="hero-subtitle">
-            I’m <strong>Mostafa Abduljaleel</strong>, an Information Technology student at Cairo
-            University. I build <strong>web and mobile apps</strong> — a shop’s daily inventory
-            app, a live queue for a barbershop — and I <strong>automate</strong> the work around
-            them, from publishing tools to bots that read my class group chats so I don’t have to.
-          </p>
+export const Hero: React.FC = () => (
+  <section className="hero" id="hero-section" aria-label="Introduction">
+    <div className="hero-inner">
+      <div className="hero-copy">
+        <p className="eyebrow hero-status">
+          <span className="status-dot" aria-hidden="true" />
+          Open to internships &amp; junior roles
+        </p>
 
-          <div className="hero-cta-group">
-            <a href="#work" className="hero-btn primary">
-              See my work <ArrowDown size={16} />
-            </a>
+        <h1 className="hero-title">
+          I build the small
+          <br />
+          software that
+          <br />
+          <em>real businesses</em>
+          <br />
+          run on.
+        </h1>
 
-            <a
-              href={`mailto:${SITE_CONFIG.email}`}
-              className="hero-btn secondary"
-            >
-              <Mail size={16} /> Email me
-            </a>
-          </div>
+        <p className="hero-lede">
+          Mostafa Abduljaleel — Information Technology at Cairo University.
+          A shop that counts its stock on my app every night, a barbershop whose
+          queue lives on a phone, a bot that reads my class group chats so I don&apos;t
+          have to.
+        </p>
 
-          {/* QUICK LINKS */}
-          <div className="hero-quick-links">
-            <a
-              href={SITE_CONFIG.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="quick-link"
-            >
-              <Github size={18} /> GitHub Profile
-            </a>
-            <a
-              href={SITE_CONFIG.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="quick-link"
-            >
-              <Linkedin size={18} /> LinkedIn
-            </a>
-          </div>
-
-          <div className="hero-terminal-wrapper">
-            <TerminalCLI />
-          </div>
+        <div className="hero-actions">
+          <a href="#work" className="btn btn-primary">
+            See the work <ArrowDown size={17} aria-hidden="true" />
+          </a>
+          <a href={`mailto:${SITE_CONFIG.email}`} className="btn btn-quiet">
+            Get in touch <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
         </div>
       </div>
-    </section>
-  );
-};
 
+      <div className="hero-visual">
+        <WorkCluster />
+      </div>
+    </div>
 
-
+    <div className="hero-ticker" aria-hidden="true">
+      <div className="ticker-track">
+        {Array.from({ length: 2 }).map((_, i) => (
+          <span key={i}>
+            React &amp; TypeScript <i>/</i> .NET &amp; C# <i>/</i> Capacitor &amp; Flutter
+            <i>/</i> Supabase &amp; SQL Server <i>/</i> Python automation <i>/</i> LLM APIs <i>/</i>
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+);

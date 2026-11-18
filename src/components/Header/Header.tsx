@@ -1,278 +1,116 @@
 import React, { useState, useEffect } from 'react';
 import { SITE_CONFIG } from '../../config/siteConfig';
 import { useUI } from '../../context/UIContext';
-import { useAudio } from '../../context/AudioContext';
-import { easterEggService } from '../../services/easterEggService';
-import { Github, Linkedin, FileText, Terminal, Menu, X } from 'lucide-react';
+import { FileText, Menu, X } from 'lucide-react';
+
+const SECTIONS = [
+  { id: 'work', label: 'Work' },
+  { id: 'approach', label: 'Approach' },
+  { id: 'contact', label: 'Contact' }
+];
 
 export const Header: React.FC = () => {
-  const { showToast, openCommandPalette } = useUI();
-  const { playClick } = useAudio();
-  const [clickTimestamps, setClickTimestamps] = useState<number[]>([]);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [activeSection, setActiveSection] = useState<string>('top');
+  const { openCommandPalette } = useUI();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [active, setActive] = useState('');
+  const [scrolled, setScrolled] = useState(false);
 
-  // Lock body scroll when mobile drawer is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-      }
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false);
     };
-
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = '';
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', onKey);
     };
-  }, [isMobileMenuOpen]);
+  }, [isMenuOpen]);
 
-  // Track active section on scroll
+  // One observer for section highlighting beats a scroll handler doing
+  // getBoundingClientRect on every frame.
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = ['work', 'philosophy', 'contact'];
-      const scrollPosition = window.scrollY + 200;
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+    SECTIONS.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
 
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section);
-            return;
-          }
-        }
-      }
-      if (window.scrollY < 300) {
-        setActiveSection('top');
-      }
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    playClick();
-
-    const now = Date.now();
-    const recent = [...clickTimestamps, now].filter(t => now - t <= 3000);
-    setClickTimestamps(recent);
-
-    if (recent.length >= 5) {
-      setClickTimestamps([]);
-      easterEggService.unlockAchievement('dev_mode');
-      showToast('DEV MODE', 'You found the logo easter egg.');
-    }
-
-    setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleNavClick = (sectionId: string) => {
-    playClick();
-    setIsMobileMenuOpen(false);
-    setActiveSection(sectionId);
-  };
 
   return (
     <>
-      <header className="site-header">
-        <a className="brand" id="brand-logo" title="Mostafa Abduljaleel Portfolio" onClick={handleLogoClick} href="#top">
-          MOSTAFA <b>ABDULJALEEL</b> <span className="brand-badge">{SITE_CONFIG.version}</span>
+      <header className={`masthead ${scrolled ? 'is-scrolled' : ''}`}>
+        <a className="wordmark" href="#hero-section" aria-label="Back to top">
+          Mostafa <b>Abduljaleel</b>
         </a>
 
-        {/* Desktop Navigation */}
-        <nav className="header-nav desktop-only" aria-label="Main Navigation">
-          <a
-            href="#work"
-            className={`nav-link ${activeSection === 'work' ? 'active' : ''}`}
-            onClick={() => handleNavClick('work')}
-          >
-            Projects
-          </a>
-          <a
-            href="#philosophy"
-            className={`nav-link ${activeSection === 'philosophy' ? 'active' : ''}`}
-            onClick={() => handleNavClick('philosophy')}
-          >
-            Philosophy
-          </a>
-          <a
-            href="#contact"
-            className={`nav-link ${activeSection === 'contact' ? 'active' : ''}`}
-            onClick={() => handleNavClick('contact')}
-          >
-            Contact
-          </a>
+        <nav className="masthead-nav" aria-label="Sections">
+          {SECTIONS.map(s => (
+            <a key={s.id} href={`#${s.id}`} className={active === s.id ? 'is-active' : ''}>
+              {s.label}
+            </a>
+          ))}
         </nav>
 
-        {/* Desktop Header Actions */}
-        <div className="header-controls desktop-only">
+        <div className="masthead-actions">
           <a
+            className="btn btn-small"
             href={SITE_CONFIG.resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="header-btn"
-            title="Open the CV (PDF)"
-            aria-label="Open the CV as a PDF"
           >
-            <FileText size={14} color="var(--accent)" /> CV
+            <FileText size={14} aria-hidden="true" /> CV
           </a>
-
-          <a
-            href={SITE_CONFIG.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="header-btn"
-            title="GitHub profile"
-            aria-label="GitHub profile"
-          >
-            <Github size={14} color="var(--accent)" /> GitHub
-          </a>
-
-          <a
-            href={SITE_CONFIG.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="header-btn"
-            title="LinkedIn profile"
-            aria-label="LinkedIn profile"
-          >
-            <Linkedin size={14} /> LinkedIn
-          </a>
-
           <button
-            className="header-btn"
-            onClick={() => {
-              playClick();
-              openCommandPalette();
-            }}
-            title="Open Command Palette (Ctrl+K / Cmd+K)"
-            aria-label="Open Command Palette"
+            className="icon-btn desktop-only"
+            onClick={openCommandPalette}
+            title="Command palette (⌘K)"
+            aria-label="Open command palette"
           >
-            <Terminal size={13} /> ⌘K
+            <span className="mono">⌘K</span>
+          </button>
+          <button
+            className="icon-btn mobile-only"
+            onClick={() => setIsMenuOpen(v => !v)}
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-
-        {/* Mobile Hamburger Toggle Button (min 48px touch target) */}
-        <button
-          className="mobile-hamburger-btn mobile-only"
-          onClick={() => {
-            playClick();
-            setIsMobileMenuOpen(!isMobileMenuOpen);
-          }}
-          aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={isMobileMenuOpen}
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </header>
 
-      {/* Mobile Navigation Drawer */}
-      <div
-        className={`mobile-drawer-backdrop ${isMobileMenuOpen ? 'open' : ''}`}
-        onClick={() => setIsMobileMenuOpen(false)}
-        aria-hidden={!isMobileMenuOpen}
-      >
-        <div
-          className="mobile-drawer-content"
-          onClick={(e) => e.stopPropagation()}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile Navigation"
-        >
-          <div className="drawer-header">
-            <a className="brand" onClick={handleLogoClick} href="#top">
-              MOSTAFA <b>ABDULJALEEL</b>
-            </a>
-            <button
-              className="drawer-close-btn"
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-label="Close Menu"
-            >
-              <X size={22} />
-            </button>
-          </div>
-
-          <nav className="mobile-drawer-nav">
-            <a
-              href="#work"
-              className={`drawer-link ${activeSection === 'work' ? 'active' : ''}`}
-              onClick={() => handleNavClick('work')}
-            >
-              <span className="drawer-link-number">01</span> Projects
-            </a>
-            <a
-              href="#philosophy"
-              className={`drawer-link ${activeSection === 'philosophy' ? 'active' : ''}`}
-              onClick={() => handleNavClick('philosophy')}
-            >
-              <span className="drawer-link-number">02</span> Philosophy
-            </a>
-            <a
-              href="#contact"
-              className={`drawer-link ${activeSection === 'contact' ? 'active' : ''}`}
-              onClick={() => handleNavClick('contact')}
-            >
-              <span className="drawer-link-number">03</span> Contact
-            </a>
+      {isMenuOpen && (
+        <div className="sheet" role="dialog" aria-modal="true" aria-label="Menu">
+          <nav>
+            {SECTIONS.map((s, i) => (
+              <a key={s.id} href={`#${s.id}`} onClick={() => setIsMenuOpen(false)}>
+                <span className="mono">0{i + 1}</span> {s.label}
+              </a>
+            ))}
           </nav>
-
-          <div className="mobile-drawer-actions">
-            <a
-              href={SITE_CONFIG.resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="drawer-action-btn primary"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <FileText size={18} /> Open CV
-            </a>
-
-            <a
-              href={SITE_CONFIG.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="drawer-action-btn"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Github size={18} /> GitHub
-            </a>
-
-            <a
-              href={SITE_CONFIG.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="drawer-action-btn"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Linkedin size={18} /> LinkedIn
-            </a>
-
-            <button
-              className="drawer-action-btn"
-              onClick={() => {
-                playClick();
-                setIsMobileMenuOpen(false);
-                openCommandPalette();
-              }}
-            >
-              <Terminal size={18} /> Command Palette (⌘K)
-            </button>
+          <div className="sheet-links">
+            <a href={SITE_CONFIG.resumeUrl} target="_blank" rel="noopener noreferrer">CV</a>
+            <a href={SITE_CONFIG.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href={SITE_CONFIG.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
-
-

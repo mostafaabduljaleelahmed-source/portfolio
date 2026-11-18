@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { SITE_CONFIG, ProjectCase } from '../../config/siteConfig';
-import { useAudio } from '../../context/AudioContext';
 import { MediaFrame } from './MediaFrame';
 import { Github, ExternalLink, Plus, Minus, Cpu, Target, Layers, Workflow, ShieldCheck, Check } from 'lucide-react';
 
@@ -19,7 +18,6 @@ interface ShowcaseProps {
 }
 
 const Showcase: React.FC<ShowcaseProps> = ({ project, flip }) => {
-  const { playClick } = useAudio();
   const [detailOpen, setDetailOpen] = useState(false);
   const media = project.media ?? [];
   const isPhone = media[0]?.orientation === 'portrait';
@@ -68,7 +66,7 @@ const Showcase: React.FC<ShowcaseProps> = ({ project, flip }) => {
           <button
             type="button"
             className="case-link ghost"
-            onClick={() => { playClick(); setDetailOpen(o => !o); }}
+            onClick={() => setDetailOpen(o => !o)}
             aria-expanded={detailOpen}
             aria-controls={detailId}
           >
@@ -138,8 +136,8 @@ const Showcase: React.FC<ShowcaseProps> = ({ project, flip }) => {
 };
 
 export const Projects: React.FC = () => (
-  <section className="scene work" id="work" aria-labelledby="work-heading">
-    <div>
+  <section className="band band-bone work" id="work" aria-labelledby="work-heading">
+    <div className="wrap">
       <header className="section-head">
         <div className="eyebrow">Selected work / 01</div>
         <h2 id="work-heading">Things I&apos;ve built</h2>

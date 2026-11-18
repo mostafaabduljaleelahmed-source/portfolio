@@ -270,18 +270,5 @@ export const SITE_CONFIG = {
       description:
         'An internal system for a programming and languages academy — students, groups, attendance and payments in one place instead of spreadsheets.'
     }
-  ] as ExperimentSignal[],
-
-  aiKnowledge: {
-    available:
-      'Mostafa is open to internships and junior roles — web and mobile development, backend (.NET), and automation work.',
-    stack:
-      'Core stack: React and TypeScript, .NET 8 / C# with ASP.NET Core, Flutter and Capacitor for Android, Supabase and SQL Server, and Python for automation and LLM workflows.',
-    projects:
-      'Featured work: Negma Fit Inventory (a daily stock-check Android app on Supabase), Barber House (a live-queue web app for a barbershop), and a University Group Tracker that filters WhatsApp group announcements through Gemini and delivers them on Telegram.',
-    university:
-      'Education: Information Technology at Cairo University, Faculty of Computers and Artificial Intelligence.',
-    contact:
-      'Email: mostafaabduljaleelahmed@gmail.com | WhatsApp: +20 101 131 9867 | LinkedIn: Mostafa Abduljaleel'
-  } as Record<string, string>
+  ] as ExperimentSignal[]
 };

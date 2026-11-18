@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useUI } from '../../context/UIContext';
-import { useAudio } from '../../context/AudioContext';
-import { easterEggService } from '../../services/easterEggService';
+import { SITE_CONFIG } from '../../config/siteConfig';
 
 interface Command {
   id: string;
@@ -11,47 +10,24 @@ interface Command {
 }
 
 const COMMANDS: Command[] = [
-  { id: 'projects', label: 'Jump to projects', tag: 'Navigate', keywords: 'projects work case studies' },
-  { id: 'contact', label: 'Jump to contact', tag: 'Navigate', keywords: 'contact email hire reach' },
-  { id: 'ai', label: 'Ask the site assistant', tag: 'Assistant', keywords: 'ai chat ask assistant question' },
-  { id: 'achievements', label: 'View unlocked achievements', tag: 'Easter egg', keywords: 'achievements trophy secret' },
-  { id: 'night-mode', label: 'Toggle midnight stealth mode', tag: 'Theme', keywords: 'night dark stealth theme' },
-  { id: 'hero-lighting', label: 'Cycle the 3D lighting theme', tag: 'Scene', keywords: 'lighting 3d scene hero volumetric' },
-  { id: 'matrix', label: 'Toggle matrix digital rain', tag: 'Easter egg', keywords: 'matrix rain green' }
+  { id: 'work', label: 'Jump to the work', tag: 'Go', keywords: 'work projects case studies' },
+  { id: 'approach', label: 'How I work', tag: 'Go', keywords: 'approach philosophy about' },
+  { id: 'contact', label: 'Contact details', tag: 'Go', keywords: 'contact email hire reach whatsapp' },
+  { id: 'cv', label: 'Open the CV', tag: 'File', keywords: 'cv resume pdf download' },
+  { id: 'email', label: 'Write an email', tag: 'Action', keywords: 'email mail write contact' }
 ];
 
 export const CommandPalette: React.FC = () => {
-  const {
-    isCommandPaletteOpen,
-    closeCommandPalette,
-    toggleCommandPalette,
-    showToast,
-    toggleAIChat,
-    openAchievements,
-    setMatrixMode
-  } = useUI();
-  const { playClick, playCrystal, playTheme } = useAudio();
-  const [search, setSearch] = useState<string>('');
+  const { isCommandPaletteOpen, closeCommandPalette, toggleCommandPalette } = useUI();
+  const [search, setSearch] = useState('');
+  const [cursor, setCursor] = useState(0);
 
   useEffect(() => {
     if (isCommandPaletteOpen) {
       setSearch('');
-      easterEggService.unlockAchievement('cmd_k');
+      setCursor(0);
     }
   }, [isCommandPaletteOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        toggleCommandPalette();
-      } else if (e.key === 'Escape' && isCommandPaletteOpen) {
-        closeCommandPalette();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCommandPaletteOpen, closeCommandPalette, toggleCommandPalette]);
 
   const results = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -59,73 +35,76 @@ export const CommandPalette: React.FC = () => {
     return COMMANDS.filter(c => `${c.label} ${c.keywords}`.toLowerCase().includes(q));
   }, [search]);
 
-  const handleCommandSelect = (cmd: string) => {
+  const run = (id: string) => {
     closeCommandPalette();
-    playClick();
-    switch (cmd) {
-      case 'projects':
-        window.location.hash = '#work';
-        break;
+    switch (id) {
+      case 'work':
+      case 'approach':
       case 'contact':
-        window.location.hash = '#contact';
+        window.location.hash = `#${id}`;
         break;
-      case 'ai':
-        toggleAIChat();
+      case 'cv':
+        window.open(SITE_CONFIG.resumeUrl, '_blank', 'noopener');
         break;
-      case 'achievements':
-        openAchievements();
-        break;
-      case 'night-mode':
-        easterEggService.toggleNightMode();
-        break;
-      case 'hero-lighting':
-        playTheme();
-        window.dispatchEvent(new CustomEvent('discover-architect'));
-        showToast('LIGHTING CYCLED', 'Scene lighting theme updated.');
-        break;
-      case 'matrix':
-        setMatrixMode(prev => !prev);
-        easterEggService.unlockAchievement('matrix');
-        playCrystal();
-        showToast('MATRIX MODE', 'Digital rain toggled.');
-        break;
-      default:
+      case 'email':
+        window.location.href = `mailto:${SITE_CONFIG.email}`;
         break;
     }
   };
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleCommandPalette();
+        return;
+      }
+      if (!isCommandPaletteOpen) return;
+      if (e.key === 'Escape') closeCommandPalette();
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setCursor(c => Math.min(c + 1, results.length - 1));
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setCursor(c => Math.max(c - 1, 0));
+      }
+      if (e.key === 'Enter' && results[cursor]) {
+        e.preventDefault();
+        run(results[cursor].id);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
   if (!isCommandPaletteOpen) return null;
 
   return (
-    <div
-      className="active"
-      id="cmdk-modal"
-      onClick={closeCommandPalette}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Command Palette"
-    >
+    <div className="cmdk" onClick={closeCommandPalette} role="dialog" aria-modal="true" aria-label="Command palette">
       <div className="cmdk-box" onClick={e => e.stopPropagation()}>
         <input
           type="text"
           className="cmdk-input"
           value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="Search commands…"
+          onChange={e => { setSearch(e.target.value); setCursor(0); }}
+          placeholder="Search…"
           autoFocus
-          aria-label="Command search input"
+          aria-label="Search commands"
         />
         <div className="cmdk-list">
-          {results.length === 0 && (
-            <div className="cmdk-item" aria-live="polite">
-              <span>No command matches “{search}”</span>
-            </div>
-          )}
-          {results.map(cmd => (
-            <div key={cmd.id} className="cmdk-item" onClick={() => handleCommandSelect(cmd.id)}>
-              <span>&gt; {cmd.label}</span>
-              <code>{cmd.tag}</code>
-            </div>
+          {results.length === 0 && <div className="cmdk-empty">Nothing matches “{search}”</div>}
+          {results.map((c, i) => (
+            <button
+              key={c.id}
+              type="button"
+              className={`cmdk-item ${i === cursor ? 'is-cursor' : ''}`}
+              onMouseEnter={() => setCursor(i)}
+              onClick={() => run(c.id)}
+            >
+              <span>{c.label}</span>
+              <code>{c.tag}</code>
+            </button>
           ))}
         </div>
       </div>

@@ -27,13 +27,6 @@ export interface StackItem {
   tag: string;
 }
 
-export interface ChatMessage {
-  id: string;
-  sender: 'user' | 'assistant' | 'system';
-  text: string;
-  timestamp: string;
-}
-
 export interface ToastMessage {
   id: string;
   title: string;
@@ -54,5 +47,4 @@ export interface SiteConfig {
   stack: StackItem[];
   projects: ProjectCase[];
   experiments: ExperimentSignal[];
-  aiKnowledge: Record<string, string>;
 }

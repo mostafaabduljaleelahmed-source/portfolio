@@ -1,57 +1,76 @@
 :root {
-  /* Color Palette Tokens */
-  --ink: #e9eff5;
-  --quiet: #97a7b8;
-  --blue: #88d9ff;
-  --blue-glow: rgba(136, 217, 255, 0.4);
-  --orange: #e89a61;
-  --orange-glow: rgba(232, 154, 97, 0.4);
-  --emerald: #38ef7d;
-  --violet: #b967ff;
-  --line: rgba(190, 222, 240, 0.14);
-  --void: #080b12;
-  --theme-color: #88d9ff;
+  /* ---------------------------------------------------------------
+     PALETTE
+     Warm ink and bone with a single terracotta accent. Deliberately
+     not the navy-and-cyan every developer portfolio reaches for: the
+     screenshots carry the colour, the page stays quiet around them.
+     --------------------------------------------------------------- */
+  --ink:        #0C0C0E;   /* page black, very slightly warm */
+  --ink-raised: #141416;   /* cards on ink */
+  --ink-line:   rgba(244, 241, 234, 0.12);
 
-  /* Semantic aliases.
-     Components reference these names; they used to be undefined, which silently
-     dropped ~34 colour declarations back to inherited values. */
-  --accent: var(--blue);
-  --purple: var(--violet);
-  --text-main: var(--ink);
-  --text-secondary: #c2cedb;
-  --text-muted: var(--quiet);
-  --text-dim: #6d7d8e;
+  --bone:       #F3F0E9;   /* paper */
+  --bone-sunk:  #E8E3D8;   /* cards on paper */
+  --bone-line:  rgba(12, 12, 14, 0.12);
 
-  /* Elevation surfaces, opaque so content stays readable over the 3D scene */
-  --surface-0: #080b12;
-  --surface-1: #0c111a;
-  --surface-2: #111823;
-  --surface-raised: rgba(255, 255, 255, 0.025);
+  --clay:       #D4603A;   /* accent */
+  --clay-soft:  #E8926E;
+  --clay-wash:  rgba(212, 96, 58, 0.10);
+  --moss:       #5E7A52;   /* secondary, for confirmations only */
 
-  /* Glassmorphism System */
-  --glass-bg: rgba(12, 18, 28, 0.65);
-  --glass-border: rgba(136, 217, 255, 0.18);
-  --glass-hover: rgba(136, 217, 255, 0.28);
-  --glass-blur: 16px;
+  /* Foreground ramps, named by the surface they sit on */
+  --on-ink:        #F4F1EA;
+  --on-ink-muted:  #A3A09A;
+  --on-ink-faint:  #6B6965;
+  --on-bone:       #15151A;
+  --on-bone-muted: #5A5751;
+  --on-bone-faint: #8A8681;
 
-  /* Touch & Accessibility Tokens */
+  /* Legacy aliases, so older rules keep resolving */
+  --accent: var(--clay);
+  --text-main: var(--on-ink);
+  --text-secondary: #CFCBC3;
+  --text-muted: var(--on-ink-muted);
+  --text-dim: var(--on-ink-faint);
+  --line: var(--ink-line);
+  --void: var(--ink);
+  --emerald: var(--moss);
+  --theme-color: var(--clay);
+
+  /* ---------------------------------------------------------------
+     TYPE
+     Bricolage Grotesque carries the display voice; Inter Tight does
+     the reading; JetBrains Mono handles labels and numerals.
+     --------------------------------------------------------------- */
+  --font-display: 'Bricolage Grotesque Variable', 'Inter Tight Variable', system-ui, sans-serif;
+  --font-body:    'Inter Tight Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono Variable', ui-monospace, 'SF Mono', monospace;
+
+  /* Fluid scale, 1.25 ratio at the small end opening to 1.33 */
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
+  --step-0:  clamp(0.95rem, 0.92rem + 0.16vw, 1.06rem);
+  --step-1:  clamp(1.15rem, 1.08rem + 0.35vw, 1.4rem);
+  --step-2:  clamp(1.45rem, 1.3rem + 0.75vw, 2rem);
+  --step-3:  clamp(1.9rem, 1.6rem + 1.5vw, 3rem);
+  --step-4:  clamp(2.4rem, 1.8rem + 3vw, 4.5rem);
+  --step-5:  clamp(3rem, 1.9rem + 5.4vw, 7rem);
+
+  /* Touch & safe areas */
   --min-touch-target: 48px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
 
-  /* Fluid Spacing Scale */
+  /* Spacing */
   --space-3xs: clamp(4px, 1vw, 6px);
   --space-2xs: clamp(8px, 1.5vw, 12px);
-  --space-xs: clamp(12px, 2vw, 16px);
-  --space-sm: clamp(16px, 2.5vw, 24px);
-  --space-md: clamp(24px, 4vw, 36px);
-  --space-lg: clamp(36px, 6vw, 56px);
-  --space-xl: clamp(56px, 8vw, 84px);
+  --space-xs:  clamp(12px, 2vw, 16px);
+  --space-sm:  clamp(16px, 2.5vw, 24px);
+  --space-md:  clamp(24px, 4vw, 36px);
+  --space-lg:  clamp(36px, 6vw, 64px);
+  --space-xl:  clamp(56px, 9vw, 120px);
+  --space-2xl: clamp(80px, 13vw, 180px);
 
-  /* Z-Index Hierarchy */
-  --z-world: 0;
+  /* Z-index */
   --z-grain: 1;
   --z-content: 2;
   --z-header: 100;
@@ -60,11 +79,13 @@
   --z-cursor: 9999;
   --z-loader: 20000;
 
-  /* Layout Limits */
-  --container-max-width: 1440px;
-  --padding-horizontal: clamp(16px, 4vw, 64px);
-  --radius-sm: 6px;
+  /* Layout */
+  --measure: 62ch;
+  --container: 1320px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --radius-sm: 4px;
   --radius-md: 10px;
-  --radius-lg: 16px;
-}
+  --radius-lg: 20px;
 
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

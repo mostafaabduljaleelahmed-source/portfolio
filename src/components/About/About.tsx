@@ -1,34 +1,53 @@
 import React from 'react';
 
-export const About: React.FC = () => {
-  return (
-    <section className="scene about" id="philosophy">
-      <div>
-        <div className="eyebrow">Engineering Philosophy / 02</div>
-        <div className="philosophy">
-          <div>
-            <h2>Clear contracts.<br />Deterministic output.<br />No magic.</h2>
-            <p className="manifesto">
-              Software engineering is about eliminating ambiguity. Reliability comes from strong schema contracts, predictable API state management, and clear technical boundaries.
-            </p>
-          </div>
-          <div className="pillars">
-            <div className="pillar">
-              <h3>01 / Schema & Architecture First</h3>
-              <p>Designing backend schemas, domain models, and API data contracts before writing code prevents refactoring churn and technical debt.</p>
-            </div>
-            <div className="pillar">
-              <h3>02 / Automation as Leverage</h3>
-              <p>Repetitive manual tasks represent system design opportunities. I automate processes using Python scripts, webhooks, and AI agent workflows.</p>
-            </div>
-            <div className="pillar">
-              <h3>03 / User & API Precision</h3>
-              <p>Systems should be responsive, fast, and reliable. Strict input validation and sub-100ms API responses create authentic developer trust.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+const PILLARS = [
+  {
+    n: '01',
+    title: 'Ship it, then make it good',
+    body:
+      'The inventory app went to the shop before it had a dashboard. Watching someone use it for a week decided what got built next, better than any plan would have.'
+  },
+  {
+    n: '02',
+    title: 'Fail toward the user',
+    body:
+      'When the licence server cannot be reached, the app stays open. A system that locks a shop out of its own records to protect a licence has its priorities backwards.'
+  },
+  {
+    n: '03',
+    title: 'Automate what I keep redoing',
+    body:
+      'Reading three class group chats every evening was a chore with a shape. Most of my automation starts as something I was already doing by hand.'
+  }
+];
 
+export const About: React.FC = () => (
+  <section className="band band-ink approach" id="approach">
+    <div className="wrap">
+      <div className="approach-grid">
+        <div className="approach-intro">
+          <p className="eyebrow">Approach / 02</p>
+          <h2>
+            Useful beats
+            <br />
+            impressive.
+          </h2>
+          <p className="lede">
+            Most of what I build is small software for people who were doing the job on
+            paper. That sets the bar: it has to be quicker than the paper on the first day.
+          </p>
+        </div>
+
+        <ol className="pillars">
+          {PILLARS.map(p => (
+            <li key={p.n}>
+              <span className="mono pillar-n">{p.n}</span>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+);
