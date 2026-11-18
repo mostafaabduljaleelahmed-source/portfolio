@@ -248,6 +248,61 @@ export const SITE_CONFIG = {
         'Running on free tiers only — no hosting bill and no paid API usage.',
         'Digests at 6am and 6pm, plus /summaries and /review on demand.'
       ]
+    },
+    {
+      number: '04',
+      title: 'Student Management System',
+      meta: 'Live for a tutoring centre \u00b7 ASP.NET Core 8 \u00b7 SQL Server',
+      summary:
+        'The back office a private tutoring centre runs on: students, groups and their weekly schedule, attendance taken session by session, and tuition payments \u2014 with the owner and their assistants seeing different things.',
+      problem:
+        'A tutoring centre tracked attendance and tuition on paper across several groups. Nobody could say reliably who had stopped showing up, who still owed fees, or which session a student missed \u2014 and the owner did not want assistants browsing the money.',
+      goal:
+        'One system both the owner and the assistants work in every day, where the rules that used to live in someone\u2019s head \u2014 how many absences before a student is out, which schedule each group follows \u2014 are enforced by the system itself.',
+      architecture:
+        'ASP.NET Core 8 Web API in a Clean Architecture solution: Domain holds the entities and nothing else, Application the services and validation, Persistence the EF Core context and repositories, Infrastructure the hashing and Excel work, and Api the controllers and JWT middleware. EF Core 8 against SQL Server. A separate React front end consumes it.',
+      architectureDiagram: [
+        '[ Web client (React, Arabic RTL) ]',
+        '        | HTTPS / JSON + JWT',
+        '        v',
+        '[ StudentManagement.Api ]  controllers, auth middleware, Swagger',
+        '        v',
+        '[ Application ]  services, DTOs, FluentValidation',
+        '        v',
+        '[ Domain ]  Student, Group, GroupDay, Session, Attendance, Payment, User',
+        '        ^                              ^',
+        '[ Persistence ]  EF Core 8,    [ Infrastructure ]  BCrypt,',
+        '  repositories, backup           EPPlus import/export',
+        '        v',
+        '[ SQL Server ]',
+        '',
+        'push to master -> GitHub Actions -> app_offline.htm -> FTP -> live'
+      ],
+      challenges: [
+        'A weekly timetable is not a list of dates. Recurring group days have to be turned into real dated sessions ahead of time without ever producing a duplicate when the job runs twice.',
+        'Expelling a student automatically is destructive, so it needed a way back: status is a lifecycle rather than a delete, and every change is written to an activity log.',
+        'Cancelling a session cannot leave attendance behind \u2014 the records for that session have to move with it.'
+      ],
+      decisions: [
+        'The owner and their assistants use the same system, but financial data is withheld from assistants, and the owner\u2019s own destructive actions sit behind a second PIN as well as their password.',
+        'The rules are enforced in the database too, not only in C#: check constraints on status values and weekday ranges, and unique indexes on (session, student) and (group, date, time), so a bug in the app cannot write a record the domain does not allow.',
+        'Deployment takes the app pool down with app_offline.htm before uploading and brings it back afterwards, so a half-uploaded build is never serving requests.'
+      ],
+      technologies: ['ASP.NET Core 8', 'C#', 'Clean Architecture', 'EF Core 8', 'SQL Server', 'JWT + refresh tokens', 'BCrypt', 'EPPlus', 'GitHub Actions'],
+      results: [
+        'In production for a real tutoring centre, deployed from master automatically.',
+        'Absence threshold, session generation and payment history are settings and rules in the system rather than habits someone has to remember.',
+        'Excel import and export, plus a JSON backup and restore the owner can run themselves.'
+      ],
+      media: [
+        {
+          type: 'image',
+          src: '/media/student-system/01-login.jpg',
+          alt: 'Sign-in screen of the student management system, in Arabic',
+          caption: 'Signing in: the owner needs a password and a PIN, assistants only a password. The interface is Arabic, laid out right to left.'
+        }
+      ],
+      link: 'https://assemacademy.vercel.app'
     }
   ] as ProjectCase[],
 
