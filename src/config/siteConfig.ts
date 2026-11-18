@@ -290,15 +290,39 @@ export const SITE_CONFIG = {
       ],
       technologies: ['ASP.NET Core 8', 'C#', 'Clean Architecture', 'EF Core 8', 'SQL Server', 'JWT + refresh tokens', 'BCrypt', 'EPPlus', 'GitHub Actions'],
       results: [
-        'In production for a real tutoring centre, deployed from master automatically.',
+        'In production for a real tutoring centre: 507 students on the roll across 9 groups, deployed from master automatically.',
         'Absence threshold, session generation and payment history are settings and rules in the system rather than habits someone has to remember.',
         'Excel import and export, plus a JSON backup and restore the owner can run themselves.'
       ],
       media: [
         {
           type: 'image',
+          src: '/media/student-system/02-dashboard.jpg',
+          alt: 'Owner dashboard showing student totals, group count and the day\u2019s attendance',
+          caption: 'The owner\u2019s view: 507 students across 9 groups, today\u2019s sessions and attendance, and how the roll splits by school year.'
+        },
+        {
+          type: 'image',
+          src: '/media/student-system/05-attendance.jpg',
+          alt: 'Taking attendance for one session, with present and absent counters',
+          caption: 'Taking a register: one tap per student, with running counts. Hitting absent enough times moves a student out of the group on its own.'
+        },
+        {
+          type: 'image',
+          src: '/media/student-system/03-groups.jpg',
+          alt: 'Groups with their recurring weekly days and times',
+          caption: 'Each group carries its weekly days and times. \u201cGenerate 30 days\u201d turns that pattern into real dated sessions, skipping any that already exist.'
+        },
+        {
+          type: 'image',
+          src: '/media/student-system/04-students.jpg',
+          alt: 'Student roll with filters, transfer and status actions, and Excel import and export',
+          caption: 'The roll: filter by group or status, move a student between groups, and import or export the whole thing as Excel.'
+        },
+        {
+          type: 'image',
           src: '/media/student-system/01-login.jpg',
-          alt: 'Sign-in screen of the student management system, in Arabic',
+          alt: 'Sign-in screen, in Arabic',
           caption: 'Signing in: the owner needs a password and a PIN, assistants only a password. The interface is Arabic, laid out right to left.'
         }
       ],
